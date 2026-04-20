@@ -11,7 +11,7 @@ from tenacity import (
 
 log = logging.getLogger(__name__)
 
-_ENDPOINT = "https://api.minimax.io/v1/text/chatcompletion_v2"
+_ENDPOINT = "https://api.minimaxi.com/v1/text/chatcompletion_v2"
 _DEFAULT_MODEL = "MiniMax-Text-01"
 
 

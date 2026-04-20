@@ -8,7 +8,7 @@ from src.minimax_client import MiniMaxClient
 @pytest.mark.asyncio
 @respx.mock
 async def test_chat_json_returns_parsed_json():
-    respx.post("https://api.minimax.io/v1/text/chatcompletion_v2").mock(
+    respx.post("https://api.minimaxi.com/v1/text/chatcompletion_v2").mock(
         return_value=httpx.Response(200, json={
             "choices": [
                 {"message": {"content": '{"zh": "大酱汤", "en": "Soybean Paste Stew"}'}}
@@ -23,7 +23,7 @@ async def test_chat_json_returns_parsed_json():
 @pytest.mark.asyncio
 @respx.mock
 async def test_chat_json_retries_on_5xx():
-    respx.post("https://api.minimax.io/v1/text/chatcompletion_v2").mock(
+    respx.post("https://api.minimaxi.com/v1/text/chatcompletion_v2").mock(
         side_effect=[
             httpx.Response(500),
             httpx.Response(200, json={"choices": [{"message": {"content": "{}"}}]}),
@@ -45,7 +45,7 @@ async def test_chat_with_web_search_passes_tool():
             "choices": [{"message": {"content": '{"verdict": "confirm"}'}}]
         })
 
-    respx.post("https://api.minimax.io/v1/text/chatcompletion_v2").mock(side_effect=responder)
+    respx.post("https://api.minimaxi.com/v1/text/chatcompletion_v2").mock(side_effect=responder)
     c = MiniMaxClient(api_key="k", group_id="g")
     out = await c.chat_with_web_search("search for something", system="sys")
     assert out == {"verdict": "confirm"}
