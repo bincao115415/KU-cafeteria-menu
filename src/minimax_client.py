@@ -58,7 +58,13 @@ class MiniMaxClient:
         if not choices:
             log.warning("MiniMax response missing choices: %s", json.dumps(resp)[:800])
             raise KeyError("choices")
-        return choices[0]["message"]["content"]
+        choice = choices[0]
+        message = choice.get("message") or choice.get("delta") or {}
+        content = message.get("content")
+        if content is None:
+            log.warning("MiniMax choice missing content: %s", json.dumps(choice)[:800])
+            return ""
+        return content
 
     async def chat_json(self, user: str, *, system: str | None = None) -> dict:
         messages: list[dict] = []
@@ -97,6 +103,44 @@ def _safe_json(raw: str) -> dict:
     try:
         parsed = json.loads(raw)
     except json.JSONDecodeError:
-        log.warning("MiniMax returned non-JSON content: %r", raw[:200])
-        return {}
+        parsed = _extract_first_json_object(raw)
+        if parsed is None:
+            log.warning("MiniMax returned non-JSON content: %r", raw[:200])
+            return {}
     return parsed if isinstance(parsed, dict) else {}
+
+
+def _extract_first_json_object(text: str) -> dict | None:
+    """Find and parse the first balanced {...} object embedded in free text.
+
+    Skips braces inside JSON strings. Returns None if no valid object parses.
+    """
+    depth = 0
+    start = -1
+    in_string = False
+    escape = False
+    for i, ch in enumerate(text):
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+            continue
+        if ch == "{":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == "}" and depth > 0:
+            depth -= 1
+            if depth == 0 and start >= 0:
+                candidate = text[start : i + 1]
+                try:
+                    return json.loads(candidate)
+                except json.JSONDecodeError:
+                    start = -1
+    return None
