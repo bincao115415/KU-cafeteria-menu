@@ -7,8 +7,8 @@ from pathlib import Path
 
 from src.cache import StateFile, TranslationCache, git_commit_and_push
 from src.config import CAFETERIAS, load_settings
+from src.deepseek_client import DeepSeekClient
 from src.mailer import send_mail
-from src.minimax_client import MiniMaxClient
 from src.models import TranslatedWeeklyBundle
 from src.parser import parse_cafeteria_page
 from src.renderer import render_email
@@ -91,10 +91,7 @@ async def run_once(
         return "pending"
 
     settings = load_settings()
-    client = MiniMaxClient(
-        api_key=settings.minimax_api_key,
-        group_id=settings.minimax_group_id,
-    )
+    client = DeepSeekClient(api_key=settings.deepseek_api_key)
     translator = Translator(client=client, cache=cache)
 
     translated_list = []

@@ -11,20 +11,18 @@ from tenacity import (
 
 log = logging.getLogger(__name__)
 
-_ENDPOINT = "https://api.minimaxi.com/v1/text/chatcompletion_v2"
-_DEFAULT_MODEL = "MiniMax-Text-01"
+_ENDPOINT = "https://api.deepseek.com/chat/completions"
+_DEFAULT_MODEL = "deepseek-chat"
 
 
-class MiniMaxClient:
+class DeepSeekClient:
     def __init__(
         self,
         api_key: str,
-        group_id: str,
         model: str = _DEFAULT_MODEL,
         timeout: float = 60.0,
     ):
         self.api_key = api_key
-        self.group_id = group_id
         self.model = model
         self.timeout = timeout
 
@@ -49,20 +47,20 @@ class MiniMaxClient:
 
     @staticmethod
     def _extract_content(resp: dict) -> str:
-        base = resp.get("base_resp")
-        if isinstance(base, dict) and base.get("status_code", 0) not in (0, None):
+        error = resp.get("error")
+        if isinstance(error, dict):
             raise RuntimeError(
-                f"MiniMax error {base.get('status_code')}: {base.get('status_msg')}"
+                f"DeepSeek error {error.get('code')}: {error.get('message')}"
             )
         choices = resp.get("choices")
         if not choices:
-            log.warning("MiniMax response missing choices: %s", json.dumps(resp)[:800])
+            log.warning("DeepSeek response missing choices: %s", json.dumps(resp)[:800])
             raise KeyError("choices")
         choice = choices[0]
         message = choice.get("message") or choice.get("delta") or {}
         content = message.get("content")
         if content is None:
-            log.warning("MiniMax choice missing content: %s", json.dumps(choice)[:800])
+            log.warning("DeepSeek choice missing content: %s", json.dumps(choice)[:800])
             return ""
         return content
 
@@ -74,23 +72,14 @@ class MiniMaxClient:
         resp = await self._post_chat({
             "model": self.model,
             "messages": messages,
+            "response_format": {"type": "json_object"},
             "temperature": 0.2,
         })
         return _safe_json(self._extract_content(resp))
 
-    async def chat_with_web_search(self, user: str, *, system: str | None = None) -> dict:
-        messages: list[dict] = []
-        if system:
-            messages.append({"role": "system", "content": system})
-        messages.append({"role": "user", "content": user})
-        resp = await self._post_chat({
-            "model": self.model,
-            "messages": messages,
-            "tools": [{"type": "web_search"}],
-            "tool_choice": "auto",
-            "temperature": 0.2,
-        })
-        return _safe_json(self._extract_content(resp))
+    async def chat_reflect(self, user: str, *, system: str | None = None) -> dict:
+        """Second-pass reflection call. Same shape as chat_json — no external tools."""
+        return await self.chat_json(user, system=system)
 
 
 def _safe_json(raw: str) -> dict:
@@ -105,7 +94,7 @@ def _safe_json(raw: str) -> dict:
     except json.JSONDecodeError:
         parsed = _extract_first_json_object(raw)
         if parsed is None:
-            log.warning("MiniMax returned non-JSON content: %r", raw[:200])
+            log.warning("DeepSeek returned non-JSON content: %r", raw[:200])
             return {}
     return parsed if isinstance(parsed, dict) else {}
 

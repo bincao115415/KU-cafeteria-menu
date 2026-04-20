@@ -1,9 +1,9 @@
 # Korea University Cafeteria Weekly Menu Mailer
 
-Auto-scrapes the 6 Korea University cafeteria weekly menus every Monday morning,
-translates new Korean dish names to Chinese + English with MiniMax (two-pass
-verification + web search), and emails a formatted HTML digest to
-`bincao115415@gmail.com` by 11:30 KST.
+Auto-scrapes 5 Korea University cafeteria weekly menus every Monday morning,
+translates new Korean dish names to Chinese + English with DeepSeek
+(`deepseek-chat`, two-pass self-reflection), and emails a formatted HTML digest
+to `bincao115415@gmail.com` by 11:30 KST.
 
 ## Architecture
 
@@ -15,7 +15,7 @@ Pipeline:
 
 ```
 scrape (httpx) → parse (BeautifulSoup)
-  → translate (MiniMax chat_json + chat_with_web_search, 2-pass, cached)
+  → translate (DeepSeek chat_json + chat_reflect, 2-pass, cached)
   → render (Jinja2 + premailer) → send (Gmail SMTP_SSL)
 ```
 
@@ -28,9 +28,9 @@ by the workflow so the next week starts with a warmer cache.
 1. Create a **private** GitHub repo and push this code.
 2. Generate a Gmail App Password at <https://myaccount.google.com/apppasswords>
    (requires 2-Step Verification).
-3. Get MiniMax credentials from the MiniMax console (API key + Group ID).
+3. Get a DeepSeek API key at <https://platform.deepseek.com/api_keys>.
 4. In GitHub → Settings → Secrets and variables → Actions, add:
-   - `MINIMAX_API_KEY`, `MINIMAX_GROUP_ID`
+   - `DEEPSEEK_API_KEY`
    - `GMAIL_USERNAME` = `bincao115415@gmail.com`
    - `GMAIL_APP_PASSWORD` = the 16-char app password
    - `MAIL_TO` = `bincao115415@gmail.com`
@@ -47,7 +47,7 @@ ruff check .                        # lint
 python -m src.main --dry-run        # prints subject + plaintext, no send/cache
 ```
 
-Dry-run requires all five env vars set (the pipeline still loads settings even
+Dry-run requires all four env vars set (the pipeline still loads settings even
 when dry-running, if any cafeteria has dishes).
 
 ## Schedule (GitHub Actions cron, UTC)
@@ -68,13 +68,13 @@ src/
   main.py              orchestrator (state machine + retry tiers)
   scraper.py           async httpx fetch w/ tenacity retry
   parser.py            BeautifulSoup → CafeteriaMenu (day-major rowspan table)
-  translator.py        two-pass MiniMax pipeline, Semaphore-gated
-  minimax_client.py    chat_json / chat_with_web_search
+  translator.py        two-pass DeepSeek pipeline, Semaphore-gated
+  deepseek_client.py   chat_json / chat_reflect (OpenAI-compatible)
   renderer.py          Jinja2 + premailer; subject + HTML + plaintext
   mailer.py            SMTP_SSL send with retry
   cache.py             TranslationCache, StateFile, git_commit_and_push
   models.py            Pydantic v2 schemas
-  config.py            6 cafeterias + Settings
+  config.py            5 cafeterias + Settings
   utils.py             normalize_dish_name, get_current_monday_kst
 templates/
   email.html.j2        inline-CSS trilingual email template

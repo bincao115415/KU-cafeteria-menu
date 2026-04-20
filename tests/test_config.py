@@ -25,20 +25,19 @@ def test_cafeteria_ids_are_unique():
 
 
 def test_load_settings_reads_env(monkeypatch):
-    monkeypatch.setenv("MINIMAX_API_KEY", "k")
-    monkeypatch.setenv("MINIMAX_GROUP_ID", "g")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "k")
     monkeypatch.setenv("GMAIL_USERNAME", "u@x")
     monkeypatch.setenv("GMAIL_APP_PASSWORD", "p")
     monkeypatch.setenv("MAIL_TO", "to@x")
     s = load_settings()
-    assert s.minimax_api_key == "k"
+    assert s.deepseek_api_key == "k"
     assert s.gmail_username == "u@x"
     assert s.mail_to == "to@x"
 
 
 def test_load_settings_missing_key_raises(monkeypatch):
     import pytest
-    for k in ["MINIMAX_API_KEY", "MINIMAX_GROUP_ID", "GMAIL_USERNAME", "GMAIL_APP_PASSWORD", "MAIL_TO"]:
+    for k in ["DEEPSEEK_API_KEY", "GMAIL_USERNAME", "GMAIL_APP_PASSWORD", "MAIL_TO"]:
         monkeypatch.delenv(k, raising=False)
-    with pytest.raises(RuntimeError, match="MINIMAX_API_KEY"):
+    with pytest.raises(RuntimeError, match="DEEPSEEK_API_KEY"):
         load_settings()

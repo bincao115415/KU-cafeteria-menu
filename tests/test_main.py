@@ -58,8 +58,7 @@ async def test_all_empty_on_first_trigger_sets_pending(tmp_path, monkeypatch):
 async def test_all_empty_on_last_trigger_sends_fallback(tmp_path, monkeypatch):
     _seed(tmp_path, {"last_sent_week": None, "last_run_at": None, "status": "idle"})
     monkeypatch.setattr("src.main.DATA", tmp_path / "data")
-    monkeypatch.setenv("MINIMAX_API_KEY", "k")
-    monkeypatch.setenv("MINIMAX_GROUP_ID", "g")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "k")
     monkeypatch.setenv("GMAIL_USERNAME", "u@x")
     monkeypatch.setenv("GMAIL_APP_PASSWORD", "p")
     monkeypatch.setenv("MAIL_TO", "to@x")

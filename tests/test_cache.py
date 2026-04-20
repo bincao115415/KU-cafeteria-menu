@@ -12,7 +12,7 @@ def _entry(**over) -> dict:
         "note_zh": None,
         "note_en": None,
         "learned_at": "2026-04-20",
-        "source": "minimax-two-pass",
+        "source": "deepseek-two-pass",
         "search_confirmed": True,
         "confidence": "high",
     }
