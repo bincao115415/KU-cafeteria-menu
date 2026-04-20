@@ -58,3 +58,21 @@ def test_safe_json_strips_code_fences():
     assert _safe_json('```json\n{"a": 1}\n```') == {"a": 1}
     assert _safe_json('```\n{"a": 2}\n```') == {"a": 2}
     assert _safe_json('not json') == {}
+
+
+def test_safe_json_extracts_object_from_prose():
+    from src.minimax_client import _safe_json
+
+    wrapped = (
+        '让我为您翻译这个韩国料理菜名。\n\n'
+        '{"zh": "大酱汤", "en": "Soybean Paste Stew"}\n\n'
+        '这个菜名来自韩国大学食堂。'
+    )
+    assert _safe_json(wrapped) == {"zh": "大酱汤", "en": "Soybean Paste Stew"}
+
+
+def test_safe_json_handles_nested_and_strings_with_braces():
+    from src.minimax_client import _safe_json
+
+    wrapped = 'prefix {"outer": {"inner": "has } brace"}, "ok": true} suffix'
+    assert _safe_json(wrapped) == {"outer": {"inner": "has } brace"}, "ok": True}
