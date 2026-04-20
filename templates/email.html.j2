@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ subject }}</title>
+<style>
+  body { margin:0; padding:0; background:#FAF8F5; color:#2A2A2A;
+         font-family:-apple-system,"Noto Sans CJK KR","PingFang SC",sans-serif;
+         font-size:14px; line-height:1.5; }
+  .wrap { width:600px; max-width:100%; margin:0 auto; padding:20px 0; }
+  .banner { background:#8B0029; color:#FFF; padding:18px 20px; border-radius:8px 8px 0 0; }
+  .banner h1 { margin:0; font-size:18px; }
+  .banner .sub { font-size:12px; opacity:0.85; margin-top:4px; }
+  .card { background:#FFF; border:1px solid #EEE; border-top:0;
+          padding:16px 18px; }
+  .cafeteria { border-radius:0; }
+  .cafeteria:last-of-type { border-radius:0 0 8px 8px; }
+  .cname-ko { font-weight:700; font-size:15px; }
+  .cname-zh { font-size:14px; color:#444; }
+  .cname-en { font-size:12px; color:#666; font-style:italic; }
+  .hours { font-size:11px; color:#888; margin-top:4px; }
+  .src { font-size:11px; color:#8B0029; text-decoration:none; }
+  .grid { width:100%; border-collapse:collapse; margin-top:12px; }
+  .grid th, .grid td { border:1px solid #EEE; vertical-align:top; padding:6px;
+                        font-size:12px; width:14.28%; }
+  .grid th { background:#FAF8F5; font-weight:600; }
+  .cat { font-size:11px; color:#8B0029; font-weight:600; text-transform:uppercase;
+         letter-spacing:.05em; margin-top:10px; margin-bottom:4px; }
+  .dish { margin-bottom:6px; padding:4px 6px; background:#FAF8F5; border-radius:4px; }
+  .dish-ko { font-size:13px; }
+  .dish-zh { font-weight:600; font-size:12px; color:#2A2A2A; }
+  .dish-en { font-size:11px; color:#666; font-style:italic; }
+  .dish-note { font-size:10px; color:#888; margin-top:2px; }
+  .new-badge { background:#D4A437; color:#FFF; font-size:10px;
+               padding:1px 5px; border-radius:8px; margin-left:4px; }
+  .warn-badge { background:#D97706; color:#FFF; font-size:10px;
+                padding:1px 5px; border-radius:8px; margin-left:4px; }
+  .empty { color:#BBB; font-size:11px; }
+  .footer { background:#FAF8F5; padding:14px 18px; border:1px solid #EEE;
+            border-top:0; border-radius:0 0 8px 8px; font-size:11px; color:#666; }
+  .errlist { color:#D97706; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="banner">
+      <h1>高丽大学食堂周菜单</h1>
+      <div class="sub">{{ week_label }} · 本周新菜 {{ new_dish_count }} 道 · 共 {{ cafeterias|length }} 个食堂</div>
+    </div>
+
+    {% for c in cafeterias %}
+    <div class="card cafeteria">
+      <div class="cname-ko">{{ c.cafeteria_name_ko }}</div>
+      <div class="cname-zh">{{ c.cafeteria_name_zh }}</div>
+      <div class="cname-en">{{ c.cafeteria_name_en }}</div>
+      {% if c.hours %}<div class="hours">{{ c.hours }}</div>{% endif %}
+      <div><a class="src" href="{{ c.source_url }}">原始页面</a></div>
+
+      {% for cat in c.all_categories %}
+        <div class="cat">{{ cat }}</div>
+        <table class="grid" role="presentation" cellspacing="0" cellpadding="0">
+          <tr>
+            {% for d in c.days %}<th>{{ d.label }}</th>{% endfor %}
+          </tr>
+          <tr>
+            {% for d in c.days %}
+              <td>
+                {% set dishes = d.categories.get(cat, []) %}
+                {% if not dishes %}
+                  <div class="empty">未更新</div>
+                {% else %}
+                  {% for dish in dishes %}
+                    <div class="dish">
+                      <div class="dish-ko">{{ dish.name_ko }}{% if dish.is_new %}<span class="new-badge">★ 新</span>{% endif %}{% if dish.confidence == "failed" %}<span class="warn-badge">⚠</span>{% endif %}</div>
+                      <div class="dish-zh">{{ dish.name_zh }}</div>
+                      <div class="dish-en">{{ dish.name_en }}</div>
+                      {% if dish.note_zh %}<div class="dish-note">{{ dish.note_zh }}</div>{% endif %}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        </table>
+      {% endfor %}
+
+      {% if c.errors %}
+      <div class="errlist">⚠ 解析/翻译异常 {{ c.errors|length }} 条</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="footer">
+      {% if global_errors %}
+      <div class="errlist">⚠ 全局异常：{{ global_errors|join('; ') }}</div>
+      {% endif %}
+      下次推送：{{ next_monday_label }} 10:30 KST<br>
+      自动翻译，新菜名经 MiniMax 两轮验证后入库
+    </div>
+  </div>
+</body>
+</html>
