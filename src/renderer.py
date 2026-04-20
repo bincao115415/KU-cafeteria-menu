@@ -4,6 +4,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from premailer import transform
 
+from src.config import CAFETERIAS
 from src.models import TranslatedWeeklyBundle
 
 TEMPLATE_DIR = Path(__file__).parent.parent / "templates"
@@ -14,16 +15,37 @@ _WEEKDAY_LABELS = {
 }
 _RENDER_WEEKDAYS = ("MON", "TUE", "WED", "THU", "FRI")
 
+# Breakfast categories filtered out of the rendered view (parser/cache untouched).
+_HIDDEN_CATEGORIES = {"조식", "천원의아침", "천원의아침(테이크아웃)", "아침"}
+
+# Korean meal-period → (zh + en) display label. Fallback: show raw Korean.
+_CATEGORY_LABELS = {
+    "중식": "午餐 Lunch",
+    "석식": "晚餐 Dinner",
+    "중식B": "午餐 B · Lunch B",
+    "중식(일품반상)": "午餐·套餐 · Lunch (Premium Set)",
+    "중식(한식반상)": "午餐·韩餐 · Lunch (Korean Set)",
+    "식사": "用餐 · Meals",
+    "요리": "主菜 · À la carte",
+    "파스타/스테이크 코스": "意面/牛排套餐 · Pasta/Steak Course",
+}
+
+_ADDRESS_BY_ID = {c["cafeteria_id"]: c.get("address", "") for c in CAFETERIAS}
+
 _env = Environment(
     loader=FileSystemLoader(TEMPLATE_DIR),
     autoescape=select_autoescape(["html"]),
 )
 
 
+def _visible_categories(day_categories: dict) -> dict:
+    return {k: v for k, v in day_categories.items() if k not in _HIDDEN_CATEGORIES}
+
+
 def _day_shape(day) -> dict:
     return {
         "label": f"{_WEEKDAY_LABELS[day.weekday]} {day.date.strftime('%m/%d')}",
-        "categories": day.categories,
+        "categories": _visible_categories(day.categories),
     }
 
 
@@ -33,16 +55,21 @@ def _cafeteria_shape(cm) -> dict:
     seen: set[str] = set()
     for d in weekday_days:
         for cat in d.categories.keys():
-            if cat not in seen:
-                seen.add(cat)
-                all_cats.append(cat)
+            if cat in _HIDDEN_CATEGORIES or cat in seen:
+                continue
+            seen.add(cat)
+            all_cats.append(cat)
+    categories_display = [
+        {"key": c, "label": _CATEGORY_LABELS.get(c, c)} for c in all_cats
+    ]
     return {
         "cafeteria_name_zh": cm.cafeteria_name_zh,
         "cafeteria_name_en": cm.cafeteria_name_en,
         "hours": getattr(cm, "hours", ""),
+        "address": _ADDRESS_BY_ID.get(cm.cafeteria_id, ""),
         "source_url": cm.source_url,
         "days": [_day_shape(d) for d in weekday_days],
-        "all_categories": all_cats,
+        "categories_display": categories_display,
         "errors": cm.errors,
     }
 
@@ -56,15 +83,22 @@ def _plaintext(bundle: TranslatedWeeklyBundle) -> str:
     ]
     for c in bundle.cafeterias:
         lines.append(f"== {c.cafeteria_name_zh} / {c.cafeteria_name_en} ==")
+        address = _ADDRESS_BY_ID.get(c.cafeteria_id, "")
+        if address:
+            lines.append(f"地址 {address}")
         for d in c.days:
-            if d.weekday not in _RENDER_WEEKDAYS or not d.categories:
+            if d.weekday not in _RENDER_WEEKDAYS:
+                continue
+            visible = _visible_categories(d.categories)
+            if not visible:
                 continue
             lines.append(f"[{_WEEKDAY_LABELS[d.weekday]} {d.date}]")
-            for cat, ds in d.categories.items():
+            for cat, ds in visible.items():
+                label = _CATEGORY_LABELS.get(cat, cat)
                 for dish in ds:
                     tag = " ★新" if dish.is_new else ""
                     lines.append(
-                        f"  [{cat}] {dish.name_zh} / {dish.name_en}{tag}"
+                        f"  [{label}] {dish.name_zh} / {dish.name_en}{tag}"
                     )
         lines.append("")
     return "\n".join(lines)

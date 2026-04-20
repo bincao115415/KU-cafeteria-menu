@@ -7,36 +7,53 @@
 <style>
   body { margin:0; padding:0; background:#FAF8F5; color:#2A2A2A;
          font-family:-apple-system,"Noto Sans CJK KR","PingFang SC",sans-serif;
-         font-size:14px; line-height:1.5; }
-  .wrap { width:600px; max-width:100%; margin:0 auto; padding:20px 0; }
-  .banner { background:#8B0029; color:#FFF; padding:18px 20px; border-radius:8px 8px 0 0; }
-  .banner h1 { margin:0; font-size:18px; }
-  .banner .sub { font-size:12px; opacity:0.85; margin-top:4px; }
+         font-size:14px; line-height:1.6; }
+  .wrap { width:640px; max-width:100%; margin:0 auto; padding:24px 0; }
+  .banner { background:#8B0029; color:#FFF; padding:22px 24px; border-radius:10px 10px 0 0; }
+  .banner h1 { margin:0; font-size:19px; }
+  .banner .sub { font-size:12px; opacity:0.85; margin-top:6px; }
   .card { background:#FFF; border:1px solid #EEE; border-top:0;
-          padding:16px 18px; }
+          padding:22px 24px; margin-bottom:0; }
   .cafeteria { border-radius:0; }
-  .cafeteria:last-of-type { border-radius:0 0 8px 8px; }
-  .cname-zh { font-weight:700; font-size:15px; color:#2A2A2A; }
-  .cname-en { font-size:12px; color:#666; font-style:italic; }
-  .hours { font-size:11px; color:#888; margin-top:4px; }
-  .src { font-size:11px; color:#8B0029; text-decoration:none; }
-  .grid { width:100%; border-collapse:collapse; margin-top:12px; }
-  .grid th, .grid td { border:1px solid #EEE; vertical-align:top; padding:6px;
-                        font-size:12px; width:20%; }
-  .grid th { background:#FAF8F5; font-weight:600; }
-  .cat { font-size:11px; color:#8B0029; font-weight:600; text-transform:uppercase;
-         letter-spacing:.05em; margin-top:10px; margin-bottom:4px; }
-  .dish { margin-bottom:6px; padding:4px 6px; background:#FAF8F5; border-radius:4px; }
-  .dish-zh { font-weight:600; font-size:13px; color:#2A2A2A; }
-  .dish-en { font-size:11px; color:#666; font-style:italic; }
-  .dish-note { font-size:10px; color:#888; margin-top:2px; }
+  .cafeteria + .cafeteria { margin-top:14px; border-top:1px solid #EEE;
+                             border-radius:10px; }
+  .cafeteria:first-of-type { margin-top:0; }
+  .cafeteria:last-of-type { border-radius:0 0 10px 10px; }
+  .cafeteria + .cafeteria { border-radius:10px; }
+  .cafeteria-header { padding-bottom:14px; border-bottom:1px solid #F1E8E0;
+                      margin-bottom:16px; }
+  .cname-zh { font-weight:700; font-size:16px; color:#2A2A2A; }
+  .cname-en { font-size:12px; color:#666; font-style:italic; margin-top:3px; }
+  .addr { font-size:12px; color:#555; margin-top:6px; }
+  .hours { font-size:12px; color:#888; margin-top:4px; }
+  .src { font-size:11px; color:#8B0029; text-decoration:none; margin-top:6px;
+         display:inline-block; }
+  .cat-block { margin-top:18px; }
+  .cat-block:first-of-type { margin-top:0; }
+  .cat { font-size:12px; color:#8B0029; font-weight:700; text-transform:uppercase;
+         letter-spacing:.06em; margin-bottom:8px; padding:6px 10px;
+         background:#FDF5EC; border-left:3px solid #8B0029; border-radius:3px; }
+  .grid { width:100%; border-collapse:separate; border-spacing:6px; }
+  .grid th, .grid td { vertical-align:top; padding:8px 9px; font-size:12px;
+                        width:20%; background:#FFF; border:1px solid #EEE;
+                        border-radius:5px; }
+  .grid th { background:#FAF8F5; font-weight:600; font-size:12px;
+             text-align:center; }
+  .dish { margin-bottom:8px; padding:6px 8px; background:#FAF8F5;
+          border-radius:5px; }
+  .dish:last-child { margin-bottom:0; }
+  .dish-zh { font-weight:600; font-size:13px; color:#2A2A2A; line-height:1.4; }
+  .dish-en { font-size:11px; color:#666; font-style:italic; margin-top:3px;
+             line-height:1.4; }
+  .dish-note { font-size:10px; color:#888; margin-top:3px; }
   .new-badge { background:#D4A437; color:#FFF; font-size:10px;
-               padding:1px 5px; border-radius:8px; margin-left:4px; }
+               padding:1px 6px; border-radius:8px; margin-left:5px; }
   .warn-badge { background:#D97706; color:#FFF; font-size:10px;
-                padding:1px 5px; border-radius:8px; margin-left:4px; }
-  .empty { color:#BBB; font-size:11px; }
-  .footer { background:#FAF8F5; padding:14px 18px; border:1px solid #EEE;
-            border-top:0; border-radius:0 0 8px 8px; font-size:11px; color:#666; }
+                padding:1px 6px; border-radius:8px; margin-left:5px; }
+  .empty { color:#BBB; font-size:11px; text-align:center; padding:4px 0; }
+  .footer { background:#FAF8F5; padding:18px 24px; border:1px solid #EEE;
+            border-top:0; border-radius:0 0 10px 10px; font-size:11px; color:#666;
+            line-height:1.7; }
   .errlist { color:#D97706; }
 </style>
 </head>
@@ -49,36 +66,41 @@
 
     {% for c in cafeterias %}
     <div class="card cafeteria">
-      <div class="cname-zh">{{ c.cafeteria_name_zh }}</div>
-      <div class="cname-en">{{ c.cafeteria_name_en }}</div>
-      {% if c.hours %}<div class="hours">{{ c.hours }}</div>{% endif %}
-      <div><a class="src" href="{{ c.source_url }}">原始页面</a></div>
+      <div class="cafeteria-header">
+        <div class="cname-zh">{{ c.cafeteria_name_zh }}</div>
+        <div class="cname-en">{{ c.cafeteria_name_en }}</div>
+        {% if c.address %}<div class="addr">📍 {{ c.address }}</div>{% endif %}
+        {% if c.hours %}<div class="hours">🕒 {{ c.hours }}</div>{% endif %}
+        <a class="src" href="{{ c.source_url }}">原始页面 →</a>
+      </div>
 
-      {% for cat in c.all_categories %}
-        <div class="cat">{{ cat }}</div>
-        <table class="grid" role="presentation" cellspacing="0" cellpadding="0">
-          <tr>
-            {% for d in c.days %}<th>{{ d.label }}</th>{% endfor %}
-          </tr>
-          <tr>
-            {% for d in c.days %}
-              <td>
-                {% set dishes = d.categories.get(cat, []) %}
-                {% if not dishes %}
-                  <div class="empty">未更新</div>
-                {% else %}
-                  {% for dish in dishes %}
-                    <div class="dish">
-                      <div class="dish-zh">{{ dish.name_zh }}{% if dish.is_new %}<span class="new-badge">★ 新</span>{% endif %}{% if dish.confidence == "failed" %}<span class="warn-badge">⚠</span>{% endif %}</div>
-                      <div class="dish-en">{{ dish.name_en }}</div>
-                      {% if dish.note_zh %}<div class="dish-note">{{ dish.note_zh }}</div>{% endif %}
-                    </div>
-                  {% endfor %}
-                {% endif %}
-              </td>
-            {% endfor %}
-          </tr>
-        </table>
+      {% for cat in c.categories_display %}
+        <div class="cat-block">
+          <div class="cat">{{ cat.label }}</div>
+          <table class="grid" role="presentation" cellspacing="0" cellpadding="0">
+            <tr>
+              {% for d in c.days %}<th>{{ d.label }}</th>{% endfor %}
+            </tr>
+            <tr>
+              {% for d in c.days %}
+                <td>
+                  {% set dishes = d.categories.get(cat.key, []) %}
+                  {% if not dishes %}
+                    <div class="empty">未更新</div>
+                  {% else %}
+                    {% for dish in dishes %}
+                      <div class="dish">
+                        <div class="dish-zh">{{ dish.name_zh }}{% if dish.is_new %}<span class="new-badge">★ 新</span>{% endif %}{% if dish.confidence == "failed" %}<span class="warn-badge">⚠</span>{% endif %}</div>
+                        <div class="dish-en">{{ dish.name_en }}</div>
+                        {% if dish.note_zh %}<div class="dish-note">{{ dish.note_zh }}</div>{% endif %}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+          </table>
+        </div>
       {% endfor %}
 
       {% if c.errors %}
