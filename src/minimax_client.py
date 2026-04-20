@@ -68,7 +68,6 @@ class MiniMaxClient:
         resp = await self._post_chat({
             "model": self.model,
             "messages": messages,
-            "response_format": {"type": "json_object"},
             "temperature": 0.2,
         })
         return _safe_json(self._extract_content(resp))
@@ -83,7 +82,6 @@ class MiniMaxClient:
             "messages": messages,
             "tools": [{"type": "web_search"}],
             "tool_choice": "auto",
-            "response_format": {"type": "json_object"},
             "temperature": 0.2,
         })
         return _safe_json(self._extract_content(resp))
