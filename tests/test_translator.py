@@ -50,7 +50,7 @@ async def test_cache_hit_skips_llm(empty_cache):
     assert dish.name_zh == "大酱汤"
     assert dish.is_new is False
     client.chat_json.assert_not_awaited()
-    client.chat_with_web_search.assert_not_awaited()
+    client.chat_reflect.assert_not_awaited()
 
 
 @pytest.mark.asyncio
@@ -60,7 +60,7 @@ async def test_two_pass_confirm(empty_cache):
         "zh": "大酱汤", "en": "Soybean Paste Stew",
         "note_zh": "韩式豆瓣酱炖豆腐", "note_en": "Korean stew",
     }
-    client.chat_with_web_search.return_value = {"verdict": "confirm"}
+    client.chat_reflect.return_value = {"verdict": "confirm"}
 
     t = Translator(client=client, cache=empty_cache)
     out = await t.translate_menu(_menu_with(["된장찌개"]))
@@ -78,7 +78,7 @@ async def test_two_pass_revise(empty_cache):
         "zh": "豆酱锅", "en": "Bean Paste Pot",
         "note_zh": "", "note_en": "",
     }
-    client.chat_with_web_search.return_value = {
+    client.chat_reflect.return_value = {
         "verdict": "revise",
         "revised": {
             "zh": "大酱汤", "en": "Soybean Paste Stew",
@@ -99,7 +99,7 @@ async def test_two_pass_no_signal(empty_cache):
         "zh": "甲", "en": "A",
         "note_zh": None, "note_en": None,
     }
-    client.chat_with_web_search.return_value = {"verdict": "no_signal"}
+    client.chat_reflect.return_value = {"verdict": "no_signal"}
     t = Translator(client=client, cache=empty_cache)
     out = await t.translate_menu(_menu_with(["된장찌개"]))
     dish = out.days[0].categories["식사"][0]
@@ -127,7 +127,7 @@ async def test_same_dish_across_days_resolved_once(empty_cache):
     client.chat_json.return_value = {
         "zh": "大酱汤", "en": "Soybean Paste Stew", "note_zh": None, "note_en": None,
     }
-    client.chat_with_web_search.return_value = {"verdict": "confirm"}
+    client.chat_reflect.return_value = {"verdict": "confirm"}
 
     menu = _menu_with(["된장찌개"])
     menu.days[1] = DaySection(
@@ -137,6 +137,6 @@ async def test_same_dish_across_days_resolved_once(empty_cache):
     t = Translator(client=client, cache=empty_cache)
     out = await t.translate_menu(menu)
     assert client.chat_json.await_count == 1
-    assert client.chat_with_web_search.await_count == 1
+    assert client.chat_reflect.await_count == 1
     assert out.days[0].categories["식사"][0].name_zh == "大酱汤"
     assert out.days[1].categories["식사"][0].name_zh == "大酱汤"
