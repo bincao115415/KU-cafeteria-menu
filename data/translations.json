@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-04-20T22:44:46+09:00",
+  "updated_at": "2026-04-20T22:51:47+09:00",
   "entries": {
     "(멘치까스/돈육:국내산)": {
       "zh": "炸猪排（韩式）",
@@ -12,6 +12,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "(사이드메뉴: 허니버터닭강정 )": {
+      "zh": "蜂蜜黄油炸鸡",
+      "en": "Honey Butter Fried Chicken",
+      "note_zh": "用蜂蜜和黄油调味",
+      "note_en": "Seasoned with honey and butter",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
     "(사이드메뉴: 허니버터닭강정)": {
       "zh": "蜂蜜黄油炸鸡块",
       "en": "Honey Butter Chicken Bites",
@@ -21,6 +31,46 @@
       "source": "minimax-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
+    },
+    "(사이드메뉴:허니버터닭강정)": {
+      "zh": "蜂蜜黄油炸鸡",
+      "en": "Honey Butter Fried Chicken",
+      "note_zh": "使用蜂蜜和黄油调味",
+      "note_en": "Seasoned with honey and butter",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "[교직원식당] 7,000₩": {
+      "zh": "韩式小菜拼盘",
+      "en": "Korean Banchan Set",
+      "note_zh": "包括泡菜、腌萝卜等传统配菜",
+      "note_en": "Includes kimchi, pickled radish, etc.",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "[학생식당] 1,000₩": {
+      "zh": "学生食堂 1000韩元套餐",
+      "en": "Student Cafeteria 1,000₩ Set",
+      "note_zh": "经济实惠的学生餐",
+      "note_en": "Affordable student meal",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "[학생식당] 6,000₩": {
+      "zh": "学生食堂套餐",
+      "en": "Student Cafeteria Set Menu",
+      "note_zh": "包含米饭、汤、配菜",
+      "note_en": "Includes rice, soup, and side dishes",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
     },
     "간장알마늘장아찌": {
       "zh": "酱油蒜瓣腌菜",
@@ -52,6 +102,26 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "나시고랭 새우가스&타르타르 쌀국수장국 단무지 배추김치 양배추샐러드": {
+      "zh": "印尼炒饭配虾饼&塔塔酱 米粉汤 腌萝卜 泡菜 卷心菜沙拉",
+      "en": "Nasi Goreng with Shrimp Cakes & Tartar Sauce Rice Noodle Soup Pickled Radish Kimchi Cabbage Salad",
+      "note_zh": "印尼风味套餐",
+      "note_en": "Indonesian-style set meal",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "누룽지죽 매실차": {
+      "zh": "锅巴粥配青梅茶",
+      "en": "Scorched Rice Porridge with Plum Tea",
+      "note_zh": "锅巴熬粥搭配酸甜青梅茶",
+      "note_en": "Scorched rice porridge served with sweet and sour plum tea",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
     "누룽지튀김": {
       "zh": "锅巴炸物",
       "en": "Crispy Rice Cakes",
@@ -71,6 +141,26 @@
       "source": "minimax-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
+    },
+    "돈가스컵밥 /소불고기김밥": {
+      "zh": "猪排杯饭/牛肉泡菜卷",
+      "en": "Pork Cutlet Rice Bowl/Kimchi Beef Roll",
+      "note_zh": "韩式炸猪排配米饭/牛肉泡菜卷饭",
+      "note_en": "Korean-style pork cutlet with rice/Kimchi beef wrapped in rice and seaweed",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "떡만둣국 계란장조림 실곤약채소무침 고춧잎무침 흑미밥 깍두기 양배추샐러드": {
+      "zh": "年糕饺子汤 酱鸡蛋 魔芋蔬菜拌菜 辣椒叶拌菜 黑米饭 萝卜泡菜 卷心菜沙拉",
+      "en": "Rice Cake Dumpling Soup, Soy Sauce Eggs, Konjac Vegetable Salad, Perilla Leaf Salad, Black Rice, Radish Kimchi, Cabbage Salad",
+      "note_zh": "韩式传统套餐",
+      "note_en": "Traditional Korean set meal",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
     },
     "뚜레쥬르미니초코케이크": {
       "zh": "多乐之日迷你巧克力蛋糕",
@@ -142,6 +232,26 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "부대컵밥/ 참치마요삼각김밥": {
+      "zh": "部队火锅杯饭/金枪鱼蛋黄酱三角饭团",
+      "en": "Army Stew Cup Rice/ Tuna Mayo Triangle Kimbap",
+      "note_zh": "部队火锅风味配菜搭配米饭/金枪鱼和蛋黄酱夹心",
+      "note_en": "Army stew ingredients with rice/ Tuna and mayo filling",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "불고기컵밥 / 김치치즈주먹밥": {
+      "zh": "韩式烤肉杯饭 / 泡菜芝士饭团",
+      "en": "Bulgogi Rice Cup / Kimchi Cheese Rice Ball",
+      "note_zh": "韩式烤肉配米饭 / 泡菜和芝士混合制成",
+      "note_en": "Bulgogi served with rice / Kimchi mixed with cheese",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
     "블루베리샐러드*딸기드레싱": {
       "zh": "蓝莓沙拉配草莓酱",
       "en": "Blueberry Salad with Strawberry Dressing",
@@ -177,6 +287,26 @@
       "en": "Unagi Don with Soy Milk Soup, Takoyaki, Pickled Radish, Kimchi, Cabbage Salad",
       "note_zh": "日式鳗鱼饭套餐",
       "note_en": "Japanese eel rice set menu",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "선재비빔밥 채소잡채 우엉들깨탕 청포묵김가루무침 궁채절임 배추김치 양배추샐러드 고구마죽 오미자차": {
+      "zh": "蔬菜拌饭、炒杂菜、牛蒡芝麻汤、绿豆凉粉拌海带粉、腌山蒜、泡菜、卷心菜沙拉、红薯粥、五味子茶",
+      "en": "Bibimbap, Japchae, Burdock Sesame Soup, Mung Bean Jelly with Seaweed Powder, Pickled Mountain Garlic, Kimchi, Cabbage Salad, Sweet Potato Porridge, Schisandra Tea",
+      "note_zh": "韩式传统套餐",
+      "note_en": "Traditional Korean set menu",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "설렁탕 두부조림 맛살브로콜리볶음 고추지무침 흑미밥 깍두기 양배추샐러드 누릉지죽 매실차": {
+      "zh": "牛骨汤 酱烧豆腐 蟹肉西兰花炒 泡菜萝卜 紫米饭 萝卜泡菜 卷心菜沙拉 米粥 梅子茶",
+      "en": "Seolleongtang Braised Tofu Crabmeat & Broccoli Stir-fry Kimchi Radish Pickles Black Rice Radish Kimchi Cabbage Salad Rice Porridge Plum Tea",
+      "note_zh": "韩式传统套餐",
+      "note_en": "Traditional Korean set meal",
       "learned_at": "2026-04-20",
       "source": "minimax-two-pass",
       "search_confirmed": false,
@@ -232,6 +362,26 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "윤희의마파두부덮밥 비취교자 계란팟국 지마구 짜사이무침 깍두기 양배추샐러드": {
+      "zh": "尹熙的马哈豆腐盖饭 翡翠饺子 鸡蛋汤 芝麻球 榨菜拌菜 萝卜块泡菜 卷心菜沙拉",
+      "en": "Yoonhee's Mapo Tofu Rice Bowl, Jade Dumplings, Egg Drop Soup, Sesame Balls, Pickled Mustard Greens, Radish Kimchi, Cabbage Salad",
+      "note_zh": "韩式融合料理套餐",
+      "note_en": "Korean fusion meal set",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "장칼국수 갈비만두찜 쌀밥 배추김치 양배추샐러드": {
+      "zh": "刀切面配牛骨汤 蒸牛骨饺子 米饭 泡菜 卷心菜沙拉",
+      "en": "Knife-cut Noodles with Beef Bone Soup Steamed Beef Dumplings Rice Kimchi Cabbage Salad",
+      "note_zh": "韩式传统家庭套餐",
+      "note_en": "Traditional Korean family meal set",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
     "저당검은콩두유": {
       "zh": "低糖黑豆豆浆",
       "en": "Low-sugar Black Soybean Milk",
@@ -262,6 +412,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "제희의제육볶음 부추전 햄채소볶음 치커리겉절이 흑미밥 배추김치 양배추샐러드 흑임자죽 석류차": {
+      "zh": "韩式辣炒猪肉, 韭菜煎饼, 火腿蔬菜炒, 苦苣拌菜, 黑米饭, 辣白菜, 卷心菜沙拉, 黑芝麻糊, 石榴茶",
+      "en": "Spicy Stir-fried Pork, Chive Pancake, Ham and Vegetable Stir-fry, Chicory Salad, Black Rice, Kimchi, Cabbage Salad, Black Sesame Paste, Pomegranate Tea",
+      "note_zh": "韩式家常套餐",
+      "note_en": "Korean homestyle set menu",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
     "주희&동환이의 돈코츠라멘 김말이강정 쌀밥 단무지 배추김치 양배추샐러드": {
       "zh": "周喜和东焕的豚骨拉面饭团套餐",
       "en": "Juhee & Donghwan's Tonkotsu Ramen Rice Ball Set",
@@ -281,6 +441,26 @@
       "source": "minimax-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
+    },
+    "참치김치컵밥 / 닭갈비삼각김밥": {
+      "zh": "金枪鱼泡菜杯饭 / 辣炒鸡排三角饭团",
+      "en": "Tuna Kimchi Cup Rice / Spicy Chicken Galbi Triangle Rice Ball",
+      "note_zh": "杯饭使用即食米饭和泡菜制作",
+      "note_en": "Cup rice uses instant rice and kimchi",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "치밥/ 묵은지삼겹주먹밥": {
+      "zh": "泡菜五花肉饭团",
+      "en": "Kimchi Pork Rice Balls",
+      "note_zh": "用泡菜和五花肉炒制后捏成饭团",
+      "note_en": "Stir-fried kimchi and pork belly shaped into balls",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
     },
     "치킨너겟": {
       "zh": "鸡块",
@@ -307,6 +487,16 @@
       "en": "Hamburger Curry Rice Croquette & Ketchup Enoki Mushroom Soup Pickled Radish Kimchi Cabbage Salad",
       "note_zh": "日式咖喱饭配炸肉饼",
       "note_en": "Japanese curry rice with meat patties",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "햄감자짜글이 계란후라이 유채나물 새송이버섯볶음 요구르트 흑미밥 배추김치 양배추샐러드": {
+      "zh": "火腿土豆炖菜套餐",
+      "en": "Ham and Potato Stew Set",
+      "note_zh": "配煎蛋、芥蓝、炒香菇、酸奶、黑米饭和泡菜",
+      "note_en": "with fried egg, greens, mushroom, yogurt, black rice and kimchi",
       "learned_at": "2026-04-20",
       "source": "minimax-two-pass",
       "search_confirmed": false,
