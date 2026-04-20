@@ -3,20 +3,13 @@ from dataclasses import dataclass
 
 CAFETERIAS: list[dict] = [
     {
-        "cafeteria_id": "songnim",
-        "source_url": "https://www.korea.ac.kr/ko/503/subview.do",
-        "cafeteria_name_ko": "수당삼양패컬티하우스 송림",
-        "cafeteria_name_zh": "修堂三养教员俱乐部 松林",
-        "cafeteria_name_en": "Sudang-Samyang Faculty House Songnim",
-        "hours": "Lunch 11:00-14:00 · Dinner 17:00-21:00",
-    },
-    {
         "cafeteria_id": "science",
         "source_url": "https://www.korea.ac.kr/ko/504/subview.do",
         "cafeteria_name_ko": "자연계 학생식당",
         "cafeteria_name_zh": "自然科学校区学生食堂",
         "cafeteria_name_en": "Science Campus Student Cafeteria",
         "hours": "",
+        "address": "",
     },
     {
         "cafeteria_id": "anam",
@@ -25,6 +18,7 @@ CAFETERIAS: list[dict] = [
         "cafeteria_name_zh": "安岩学舍食堂",
         "cafeteria_name_en": "Anam Dormitory Cafeteria",
         "hours": "",
+        "address": "",
     },
     {
         "cafeteria_id": "sanhak",
@@ -33,6 +27,7 @@ CAFETERIAS: list[dict] = [
         "cafeteria_name_zh": "产学馆食堂",
         "cafeteria_name_en": "Sanhakgwan Cafeteria",
         "hours": "",
+        "address": "",
     },
     {
         "cafeteria_id": "alumni",
@@ -41,6 +36,7 @@ CAFETERIAS: list[dict] = [
         "cafeteria_name_zh": "校友会馆学生食堂",
         "cafeteria_name_en": "Alumni Association Student Cafeteria",
         "hours": "",
+        "address": "",
     },
     {
         "cafeteria_id": "student_center",
@@ -49,6 +45,7 @@ CAFETERIAS: list[dict] = [
         "cafeteria_name_zh": "学生会馆学生食堂",
         "cafeteria_name_en": "Student Center Student Cafeteria",
         "hours": "",
+        "address": "",
     },
 ]
 

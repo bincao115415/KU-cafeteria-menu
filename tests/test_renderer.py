@@ -80,3 +80,58 @@ def test_render_contains_source_link():
 def test_render_inlines_css():
     html, _, _ = render_email(_make_bundle())
     assert 'style="' in html
+
+
+def _bundle_with_categories(categories: dict) -> TranslatedWeeklyBundle:
+    cm = TranslatedCafeteriaMenu(
+        cafeteria_id="science",
+        cafeteria_name_ko="자연계 학생식당",
+        cafeteria_name_zh="自然科学校区学生食堂",
+        cafeteria_name_en="Science Campus Student Cafeteria",
+        week_start=date(2026, 4, 20),
+        days=[
+            TranslatedDaySection(
+                date=date(2026, 4, 20), weekday="MON", categories=categories,
+            ),
+            *[TranslatedDaySection(date=date(2026, 4, 20 + i), weekday=w, categories={})
+              for i, w in enumerate(["TUE", "WED", "THU", "FRI", "SAT", "SUN"], start=1)],
+        ],
+        source_url="https://www.korea.ac.kr/ko/504/subview.do",
+        fetched_at=datetime(2026, 4, 20, 10, 30),
+    )
+    return TranslatedWeeklyBundle(
+        week_start=date(2026, 4, 20), cafeterias=[cm], new_dish_count=0,
+    )
+
+
+def test_render_drops_breakfast_categories():
+    dish = DishTranslated(
+        name_ko="x", name_zh="稀饭", name_en="Congee",
+        note_zh=None, is_new=False, confidence="high",
+    )
+    bundle = _bundle_with_categories({
+        "조식": [dish],
+        "중식": [DishTranslated(
+            name_ko="x", name_zh="午餐菜", name_en="Lunch Dish",
+            note_zh=None, is_new=False, confidence="high",
+        )],
+    })
+    html, _, text = render_email(bundle)
+    assert "稀饭" not in html
+    assert "稀饭" not in text
+    assert "조식" not in html
+    assert "午餐菜" in html
+
+
+def test_render_translates_category_labels():
+    dish = DishTranslated(
+        name_ko="x", name_zh="饭", name_en="Rice",
+        note_zh=None, is_new=False, confidence="high",
+    )
+    bundle = _bundle_with_categories({"중식": [dish], "석식": [dish]})
+    html, _, _ = render_email(bundle)
+    assert "午餐 Lunch" in html
+    assert "晚餐 Dinner" in html
+    # Raw Korean category key should not appear as a header
+    assert ">중식<" not in html
+    assert ">석식<" not in html

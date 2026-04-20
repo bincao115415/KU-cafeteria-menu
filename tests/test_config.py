@@ -1,8 +1,8 @@
 from src.config import CAFETERIAS, load_settings
 
 
-def test_cafeterias_count_is_six():
-    assert len(CAFETERIAS) == 6
+def test_cafeterias_count_is_five():
+    assert len(CAFETERIAS) == 5
 
 
 def test_cafeterias_have_required_fields():
@@ -12,6 +12,11 @@ def test_cafeterias_have_required_fields():
         assert c["cafeteria_name_ko"]
         assert c["cafeteria_name_zh"]
         assert c["cafeteria_name_en"]
+        assert "address" in c
+
+
+def test_songnim_removed():
+    assert all(c["cafeteria_id"] != "songnim" for c in CAFETERIAS)
 
 
 def test_cafeteria_ids_are_unique():
