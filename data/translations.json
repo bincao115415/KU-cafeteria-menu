@@ -1,5 +1,346 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-04-20T22:32:07+09:00",
-  "entries": {}
+  "updated_at": "2026-04-20T22:44:46+09:00",
+  "entries": {
+    "(멘치까스/돈육:국내산)": {
+      "zh": "炸猪排（韩式）",
+      "en": "Korean-style Pork Cutlet",
+      "note_zh": "使用国产猪肉制作",
+      "note_en": "Made with domestic pork",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "(사이드메뉴: 허니버터닭강정)": {
+      "zh": "蜂蜜黄油炸鸡块",
+      "en": "Honey Butter Chicken Bites",
+      "note_zh": "使用蜂蜜和黄油调味的小块炸鸡",
+      "note_en": "Small pieces of fried chicken seasoned with honey and butter",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "간장알마늘장아찌": {
+      "zh": "酱油蒜瓣腌菜",
+      "en": "Soy Sauce Marinated Garlic",
+      "note_zh": "用酱油腌制的蒜瓣，通常作为小菜食用",
+      "note_en": "Garlic cloves marinated in soy sauce, typically served as a side dish",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "경완이의 부대찌개 계란찜 건파래볶음 참나물겉절이 흑미밥 깍두기 양배추샐러드": {
+      "zh": "庆完家部队火锅套餐",
+      "en": "Kyungwan's Army Stew Set",
+      "note_zh": "含蒸蛋、海苔炒、芝麻菜拌菜、黑米饭、泡菜、卷心菜沙拉",
+      "note_en": "Includes steamed egg, stir-fried seaweed, sesame leaf salad, black rice, kimchi, and cabbage salad",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "그린샐러드": {
+      "zh": "蔬菜沙拉",
+      "en": "Green Salad",
+      "note_zh": "新鲜蔬菜配橄榄油和醋",
+      "note_en": "Fresh greens with olive oil and vinegar",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "누룽지튀김": {
+      "zh": "锅巴炸物",
+      "en": "Crispy Rice Cakes",
+      "note_zh": "用剩米饭制成的酥脆炸物，通常称为锅巴",
+      "note_en": "Crispy snacks made from leftover rice, commonly known as 'nurungji'",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "닭볶음탕 완자조림 쑥갓오이겉절이 무말랭이무침 흑미밥 배추김치 양배추샐러드": {
+      "zh": "辣炒鸡块套餐",
+      "en": "Spicy Braised Chicken Set",
+      "note_zh": "含肉丸、茼蒿黄瓜泡菜、萝卜干和紫米饭等配菜",
+      "note_en": "Includes meatballs, crown daisy cucumber kimchi, dried radish, and purple rice",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "뚜레쥬르미니초코케이크": {
+      "zh": "多乐之日迷你巧克力蛋糕",
+      "en": "Tous Les Jours Mini Chocolate Cake",
+      "note_zh": "韩国知名烘焙品牌多乐之日的迷你版巧克力蛋糕",
+      "note_en": "Mini version of chocolate cake from popular Korean bakery Tous Les Jours",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "뚝배기소고기미역국 훈제오리 부추무침 연근조림 흑미밥 깍두기 양배추샐러드 누룽지죽 매실차": {
+      "zh": "石锅牛肉海带汤 熏鸭 韭菜拌莲藕 蜜汁莲藕 黑米饭 萝卜泡菜 卷心菜沙拉 锅巴粥 梅子茶",
+      "en": "Stone Pot Beef Seaweed Soup Smoked Duck Leek and Lotus Root Salad Honey-glazed Lotus Root Black Rice Radish Kimchi Cabbage Salad Crispy Rice Porridge Plum Tea",
+      "note_zh": "更正部分菜名翻译以更符合常见表达",
+      "note_en": "Revised some dish names for more common expressions",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "마라두부덮밥": {
+      "zh": "麻辣豆腐盖饭",
+      "en": "Spicy Tofu Rice Bowl",
+      "note_zh": "韩式改良麻辣豆腐配米饭",
+      "note_en": "Korean-style spicy tofu with rice",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "매콤볶음우동": {
+      "zh": "辣炒乌冬面",
+      "en": "Spicy Stir-fried Udon",
+      "note_zh": "使用辣酱和蔬菜炒制",
+      "note_en": "Stir-fried with spicy sauce and vegetables",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "미니돈가스": {
+      "zh": "迷你炸猪排",
+      "en": "Mini Tonkatsu",
+      "note_zh": "小份量炸猪排",
+      "note_en": "Smaller portion of breaded pork cutlet",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "미역장국": {
+      "zh": "海带汤",
+      "en": "Seaweed Soup",
+      "note_zh": "用海带和牛肉熬制",
+      "note_en": "Made with seaweed and beef",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "배추된장국": {
+      "zh": "白菜大酱汤",
+      "en": "Napa Cabbage Soybean Paste Soup",
+      "note_zh": "使用白菜和大酱熬制",
+      "note_en": "Made with napa cabbage and soybean paste",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "블루베리샐러드*딸기드레싱": {
+      "zh": "蓝莓沙拉配草莓酱",
+      "en": "Blueberry Salad with Strawberry Dressing",
+      "note_zh": "配草莓风味沙拉酱",
+      "note_en": "with strawberry dressing",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "블루베리샐러드*오렌지드레싱": {
+      "zh": "蓝莓沙拉配橙子酱",
+      "en": "Blueberry Salad with Orange Dressing",
+      "note_zh": "新鲜蓝莓搭配橙子风味的沙拉酱",
+      "note_en": "Fresh blueberries with orange-flavored salad dressing",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "새우칩": {
+      "zh": "虾片",
+      "en": "Shrimp Chips",
+      "note_zh": "油炸虾味膨化食品",
+      "note_en": "Fried shrimp-flavored snack",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "석화의가츠동 유부장국 타코야끼 단무지 배추김치 양배추샐러드": {
+      "zh": "鳗鱼盖饭配豆乳汤、章鱼烧、腌萝卜、白菜泡菜、卷心菜沙拉",
+      "en": "Unagi Don with Soy Milk Soup, Takoyaki, Pickled Radish, Kimchi, Cabbage Salad",
+      "note_zh": "日式鳗鱼饭套餐",
+      "note_en": "Japanese eel rice set menu",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "시금치 된장국": {
+      "zh": "菠菜大酱汤",
+      "en": "Spinach Soybean Paste Soup",
+      "note_zh": "用大酱和菠菜熬制",
+      "note_en": "Made with soybean paste and spinach",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "쌀밥": {
+      "zh": "米饭",
+      "en": "Steamed Rice",
+      "note_zh": "蒸煮的韩国大米",
+      "note_en": "Steamed Korean rice",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "아이스녹차": {
+      "zh": "冰绿茶",
+      "en": "Iced Green Tea",
+      "note_zh": "用绿茶冲泡后加冰块",
+      "note_en": "Green tea with ice cubes",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "오미자차": {
+      "zh": "五味子茶",
+      "en": "Schisandra Tea",
+      "note_zh": "用五味子果实泡制的传统养生茶",
+      "note_en": "Traditional tea made with schisandra berries",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "요구르트": {
+      "zh": "酸奶",
+      "en": "Yogurt",
+      "note_zh": "发酵乳制品",
+      "note_en": "Fermented dairy product",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "저당검은콩두유": {
+      "zh": "低糖黑豆豆浆",
+      "en": "Low-sugar Black Soybean Milk",
+      "note_zh": "使用黑豆制成，糖分较低",
+      "note_en": "Made with black soybeans, low in sugar",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "제육김치볶음": {
+      "zh": "泡菜炒猪肉",
+      "en": "Kimchi Jeyuk Bokkeum",
+      "note_zh": "韩国传统料理，用泡菜和猪肉片炒制",
+      "note_en": "A traditional Korean dish, stir-fried with kimchi and pork slices",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "제육볶음": {
+      "zh": "辣炒猪肉",
+      "en": "Spicy Stir-fried Pork",
+      "note_zh": "用辣椒酱和腌料炒制",
+      "note_en": "Cooked with gochujang and marinade",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "주희&동환이의 돈코츠라멘 김말이강정 쌀밥 단무지 배추김치 양배추샐러드": {
+      "zh": "周喜和东焕的豚骨拉面饭团套餐",
+      "en": "Juhee & Donghwan's Tonkotsu Ramen Rice Ball Set",
+      "note_zh": "包含豚骨拉面饭团、泡菜、白菜泡菜、腌萝卜和卷心菜沙拉",
+      "note_en": "Includes tonkotsu ramen rice balls, kimchi, pickled radish, and cabbage salad",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "지철이의 불고기덮밥 고구마맛탕 뭇국 푸실리샐러드 오복지무침 깍두기 양배추샐러드": {
+      "zh": "智哲套餐: 烤肉盖饭, 拔丝地瓜, 萝卜汤, 意大利面沙拉, 腌萝卜条, 萝卜泡菜, 卷心菜沙拉",
+      "en": "Jicheol's Set Menu: Bulgogi Rice Bowl, Sweet Potato Tempura, Radish Soup, Fusilli Salad, Pickled Radish, Radish Kimchi, Cabbage Salad",
+      "note_zh": "包含主菜、配菜和汤的韩式套餐",
+      "note_en": "Korean set meal with main dish, sides, and soup",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "치킨너겟": {
+      "zh": "鸡块",
+      "en": "Chicken Nuggets",
+      "note_zh": "油炸鸡肉制品",
+      "note_en": "Deep-fried chicken pieces",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "토마토닭고기카레라이스": {
+      "zh": "番茄鸡肉咖喱饭",
+      "en": "Tomato Chicken Curry Rice",
+      "note_zh": "使用新鲜番茄和鸡肉制作",
+      "note_en": "Made with fresh tomatoes and chicken",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "함박카레라이스 크로켓&케찹 팽이버섯장국 단무지 배추김치 양배추샐러드": {
+      "zh": "汉堡咖喱饭炸丸子&番茄酱金针菇汤 腌萝卜 泡菜 卷心菜沙拉",
+      "en": "Hamburger Curry Rice Croquette & Ketchup Enoki Mushroom Soup Pickled Radish Kimchi Cabbage Salad",
+      "note_zh": "日式咖喱饭配炸肉饼",
+      "note_en": "Japanese curry rice with meat patties",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": false,
+      "confidence": "low"
+    },
+    "현대에너지바": {
+      "zh": "海苔饭能量棒",
+      "en": "Seaweed Rice Energy Bar",
+      "note_zh": "用海苔、米饭等制作，通常作为健康零食",
+      "note_en": "Made with seaweed, rice, and other ingredients, typically as a healthy snack",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "후식과일(사과)": {
+      "zh": "苹果甜点",
+      "en": "Apple Dessert",
+      "note_zh": "新鲜苹果切片作为餐后水果",
+      "note_en": "Fresh apple slices served as a dessert fruit",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "흑미밥": {
+      "zh": "黑米饭",
+      "en": "Black Rice",
+      "note_zh": "用黑米煮制的米饭",
+      "note_en": "Cooked with black rice",
+      "learned_at": "2026-04-20",
+      "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    }
+  }
 }
