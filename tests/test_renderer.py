@@ -35,14 +35,31 @@ def _make_bundle() -> TranslatedWeeklyBundle:
     )
 
 
-def test_render_contains_korean_and_chinese_names():
+def test_render_contains_chinese_and_english_names():
     html, subject, text = render_email(_make_bundle())
-    assert "된장찌개" in html
     assert "大酱汤" in html
     assert "Soybean Paste Stew" in html
     assert "[高大食堂]" in subject
     assert "1" in subject
     assert "大酱汤" in text
+
+
+def test_render_omits_korean():
+    html, _, text = render_email(_make_bundle())
+    assert "된장찌개" not in html
+    assert "수당삼양" not in html
+    assert "된장찌개" not in text
+
+
+def test_render_shows_only_weekdays():
+    html, _, _ = render_email(_make_bundle())
+    assert "周一 Mon" in html
+    assert "周五 Fri" in html
+    # Saturday/Sunday columns dropped
+    assert "周六" not in html
+    assert "周日" not in html
+    assert "Sat" not in html
+    assert "Sun" not in html
 
 
 def test_render_uses_new_badge():

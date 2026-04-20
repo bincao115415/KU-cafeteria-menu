@@ -16,20 +16,18 @@
           padding:16px 18px; }
   .cafeteria { border-radius:0; }
   .cafeteria:last-of-type { border-radius:0 0 8px 8px; }
-  .cname-ko { font-weight:700; font-size:15px; }
-  .cname-zh { font-size:14px; color:#444; }
+  .cname-zh { font-weight:700; font-size:15px; color:#2A2A2A; }
   .cname-en { font-size:12px; color:#666; font-style:italic; }
   .hours { font-size:11px; color:#888; margin-top:4px; }
   .src { font-size:11px; color:#8B0029; text-decoration:none; }
   .grid { width:100%; border-collapse:collapse; margin-top:12px; }
   .grid th, .grid td { border:1px solid #EEE; vertical-align:top; padding:6px;
-                        font-size:12px; width:14.28%; }
+                        font-size:12px; width:20%; }
   .grid th { background:#FAF8F5; font-weight:600; }
   .cat { font-size:11px; color:#8B0029; font-weight:600; text-transform:uppercase;
          letter-spacing:.05em; margin-top:10px; margin-bottom:4px; }
   .dish { margin-bottom:6px; padding:4px 6px; background:#FAF8F5; border-radius:4px; }
-  .dish-ko { font-size:13px; }
-  .dish-zh { font-weight:600; font-size:12px; color:#2A2A2A; }
+  .dish-zh { font-weight:600; font-size:13px; color:#2A2A2A; }
   .dish-en { font-size:11px; color:#666; font-style:italic; }
   .dish-note { font-size:10px; color:#888; margin-top:2px; }
   .new-badge { background:#D4A437; color:#FFF; font-size:10px;
@@ -51,7 +49,6 @@
 
     {% for c in cafeterias %}
     <div class="card cafeteria">
-      <div class="cname-ko">{{ c.cafeteria_name_ko }}</div>
       <div class="cname-zh">{{ c.cafeteria_name_zh }}</div>
       <div class="cname-en">{{ c.cafeteria_name_en }}</div>
       {% if c.hours %}<div class="hours">{{ c.hours }}</div>{% endif %}
@@ -72,8 +69,7 @@
                 {% else %}
                   {% for dish in dishes %}
                     <div class="dish">
-                      <div class="dish-ko">{{ dish.name_ko }}{% if dish.is_new %}<span class="new-badge">★ 新</span>{% endif %}{% if dish.confidence == "failed" %}<span class="warn-badge">⚠</span>{% endif %}</div>
-                      <div class="dish-zh">{{ dish.name_zh }}</div>
+                      <div class="dish-zh">{{ dish.name_zh }}{% if dish.is_new %}<span class="new-badge">★ 新</span>{% endif %}{% if dish.confidence == "failed" %}<span class="warn-badge">⚠</span>{% endif %}</div>
                       <div class="dish-en">{{ dish.name_en }}</div>
                       {% if dish.note_zh %}<div class="dish-note">{{ dish.note_zh }}</div>{% endif %}
                     </div>
