@@ -49,7 +49,16 @@ class MiniMaxClient:
 
     @staticmethod
     def _extract_content(resp: dict) -> str:
-        return resp["choices"][0]["message"]["content"]
+        base = resp.get("base_resp")
+        if isinstance(base, dict) and base.get("status_code", 0) not in (0, None):
+            raise RuntimeError(
+                f"MiniMax error {base.get('status_code')}: {base.get('status_msg')}"
+            )
+        choices = resp.get("choices")
+        if not choices:
+            log.warning("MiniMax response missing choices: %s", json.dumps(resp)[:800])
+            raise KeyError("choices")
+        return choices[0]["message"]["content"]
 
     async def chat_json(self, user: str, *, system: str | None = None) -> dict:
         messages: list[dict] = []
