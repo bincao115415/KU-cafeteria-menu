@@ -1,3 +1,4 @@
+import json as _json
 import logging
 from datetime import date
 from typing import Callable, Literal, TypedDict
@@ -142,6 +143,60 @@ class _Retryable(Exception):
     """Raised on 429/5xx to trigger tenacity backoff."""
 
 
+_DISHES_SOFT_LIMIT = 2000  # Notion rich_text content limit
+
+
+def _render_dishes_text(categories: list[CategoryBlock]) -> str:
+    lines: list[str] = []
+    for blk in categories:
+        lines.append(f"【{blk['label_ko']}】")
+        for dish in blk["dishes"]:
+            star = " ★" if dish["is_new"] else ""
+            ko = dish["name_ko"]
+            zh = dish["name_zh"] or ko
+            en = dish["name_en"] or ""
+            lines.append(f"• {ko} / {zh}{star} / {en}".rstrip(" /"))
+        lines.append("")
+    text = "\n".join(lines).rstrip()
+    if len(text) <= _DISHES_SOFT_LIMIT:
+        return text
+    truncated = text[: _DISHES_SOFT_LIMIT - 24].rstrip()
+    dropped = text[len(truncated):].count("\n•")
+    return f"{truncated}\n… (+{dropped} more)"
+
+
+def _meal_properties(meal: MealRow) -> dict:
+    title = (
+        f"{meal['date'].isoformat()} {meal['day']} · "
+        f"{CAFETERIA_SHORT_ZH[meal['cafeteria_id']]} · {meal['meal']}"
+    )
+    photo_urls: list[str] = [
+        ln["photo_url"]
+        for blk in meal["categories"] for ln in blk["dishes"]
+        if ln["photo_url"]
+    ]
+    return {
+        "Name": {"title": [{"text": {"content": title}}]},
+        "Week": {"date": {"start": meal["week_monday"].isoformat()}},
+        "Day": {"select": {"name": meal["day"]}},
+        "Cafeteria": {"select": {"name": CAFETERIA_SHORT_ZH[meal["cafeteria_id"]]}},
+        "Meal": {"select": {"name": meal["meal"]}},
+        "Photo": {"files": [
+            {
+                "type": "external",
+                "name": (url.rsplit("/", 1)[-1] or "photo")[:100],
+                "external": {"url": url},
+            }
+            for url in photo_urls[:25]  # Notion limit: 25 files per property
+        ]},
+        "Dishes": {"rich_text": [{"text": {"content": _render_dishes_text(meal["categories"])}}]},
+        "Dish Count": {"number": meal["dish_count"]},
+        "New Count": {"number": meal["new_count"]},
+        "Confidence": {"select": {"name": meal["confidence"]}},
+        "Source URL": {"url": meal["source_url"]},
+    }
+
+
 class NotionWriter:
     def __init__(
         self,
@@ -184,7 +239,13 @@ class NotionWriter:
     async def _http(self, method: str, path: str, *, json: dict | None = None) -> dict:
         if self._client is None:
             raise RuntimeError("use `async with NotionWriter(...)`")
-        resp = await self._client.request(method, f"{NOTION_API}{path}", json=json)
+        content = (
+            _json.dumps(json, ensure_ascii=False).encode("utf-8")
+            if json is not None else None
+        )
+        resp = await self._client.request(
+            method, f"{NOTION_API}{path}", content=content,
+        )
         if resp.status_code == 429:
             retry_after = resp.headers.get("Retry-After")
             log.warning("notion 429 on %s %s (Retry-After=%s)", method, path, retry_after)
@@ -196,3 +257,41 @@ class NotionWriter:
                 f"Notion {method} {path} → {resp.status_code}: {resp.text[:400]}"
             )
         return resp.json()
+
+    async def _find_existing(self, meal: MealRow) -> str | None:
+        body = {
+            "filter": {"and": [
+                {"property": "Week", "date": {"equals": meal["week_monday"].isoformat()}},
+                {"property": "Day", "select": {"equals": meal["day"]}},
+                {"property": "Cafeteria",
+                 "select": {"equals": CAFETERIA_SHORT_ZH[meal["cafeteria_id"]]}},
+                {"property": "Meal", "select": {"equals": meal["meal"]}},
+            ]},
+            "page_size": 1,
+        }
+        resp = await self._http(
+            "POST", f"/databases/{self.database_id}/query", json=body
+        )
+        results = resp.get("results") or []
+        return results[0]["id"] if results else None
+
+    async def upsert_meal(self, meal: MealRow) -> Literal["inserted", "updated", "failed"]:
+        try:
+            existing_id = await self._find_existing(meal)
+            props = _meal_properties(meal)
+            if existing_id:
+                await self._http(
+                    "PATCH", f"/pages/{existing_id}", json={"properties": props}
+                )
+                return "updated"
+            await self._http("POST", "/pages", json={
+                "parent": {"database_id": self.database_id},
+                "properties": props,
+            })
+            return "inserted"
+        except Exception:
+            log.exception(
+                "upsert failed: %s %s %s %s",
+                meal["cafeteria_id"], meal["day"], meal["meal"], meal["week_monday"],
+            )
+            return "failed"
