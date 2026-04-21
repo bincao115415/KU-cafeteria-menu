@@ -152,10 +152,9 @@ def _render_dishes_text(categories: list[CategoryBlock]) -> str:
         lines.append(f"【{blk['label_ko']}】")
         for dish in blk["dishes"]:
             star = " ★" if dish["is_new"] else ""
-            ko = dish["name_ko"]
-            zh = dish["name_zh"] or ko
+            zh = dish["name_zh"] or dish["name_ko"]
             en = dish["name_en"] or ""
-            lines.append(f"• {ko} / {zh}{star} / {en}".rstrip(" /"))
+            lines.append(f"• {zh}{star} / {en}".rstrip(" /"))
         lines.append("")
     text = "\n".join(lines).rstrip()
     if len(text) <= _DISHES_SOFT_LIMIT:

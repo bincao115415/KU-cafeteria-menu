@@ -155,7 +155,8 @@ async def test_upsert_meal_inserts_when_not_found():
     body = created.calls.last.request.content.decode()
     assert '"database_id": "dbid"' in body
     assert "午餐" in body
-    assert "김치찌개" in body
+    assert "泡菜汤" in body  # zh name appears in Dishes render
+    assert "김치찌개" not in body  # Korean excluded from dish render by design
     assert "★" in body  # is_new marker
 
 
