@@ -3,7 +3,6 @@ import logging
 from pathlib import Path
 
 import httpx
-
 from slugify import slugify
 
 log = logging.getLogger(__name__)

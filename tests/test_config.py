@@ -83,7 +83,8 @@ def test_load_settings_missing_notion_token_raises(monkeypatch):
     }.items():
         monkeypatch.setenv(k, v)
     monkeypatch.delenv("NOTION_TOKEN", raising=False)
-    from src.config import load_settings
     import pytest
+
+    from src.config import load_settings
     with pytest.raises(RuntimeError, match=r"Missing required env var: NOTION_TOKEN"):
         load_settings()
