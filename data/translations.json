@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-04-21T15:05:58+09:00",
+  "updated_at": "2026-04-21T15:08:11+09:00",
   "entries": {
     "&양념장": {
       "zh": "调味酱",
@@ -11,6 +11,16 @@
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
+    },
+    "(게육:)": {
+      "zh": "蟹肉汤",
+      "en": "Crab Soup",
+      "note_zh": "以蟹肉为主要食材的汤品",
+      "note_en": "A soup made primarily with crab meat",
+      "learned_at": "2026-04-21",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
     },
     "(계육:브라질산)": {
       "zh": "巴西进口鸡",
@@ -101,6 +111,16 @@
       "source": "minimax-two-pass",
       "search_confirmed": false,
       "confidence": "low"
+    },
+    "(새우볼꼬치/오징어:중국산)": {
+      "zh": "虾球串/鱿鱼串（中国产）",
+      "en": "Shrimp Ball Skewer/Squid Skewer (Chinese Origin)",
+      "note_zh": "由虾肉丸和鱿鱼串成，食材源自中国。",
+      "note_en": "Skewered shrimp balls and squid, ingredients sourced from China.",
+      "learned_at": "2026-04-21",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
     },
     "(스모크햄/계육,돈육:국내산)": {
       "zh": "烟熏火腿/鸡肉猪肉拼盘",
