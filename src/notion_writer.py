@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from datetime import date
 from typing import Callable, Literal, TypedDict
@@ -183,15 +182,15 @@ class NotionWriter:
         reraise=True,
     )
     async def _http(self, method: str, path: str, *, json: dict | None = None) -> dict:
-        assert self._client is not None, "use `async with NotionWriter(...)`"
+        if self._client is None:
+            raise RuntimeError("use `async with NotionWriter(...)`")
         resp = await self._client.request(method, f"{NOTION_API}{path}", json=json)
         if resp.status_code == 429:
-            retry_after = float(resp.headers.get("Retry-After", "1"))
-            log.warning("notion 429; sleeping %.1fs", retry_after)
-            await asyncio.sleep(retry_after)
-            raise _Retryable("429")
+            retry_after = resp.headers.get("Retry-After")
+            log.warning("notion 429 on %s %s (Retry-After=%s)", method, path, retry_after)
+            raise _Retryable(f"{method} {path}: 429")
         if 500 <= resp.status_code < 600:
-            raise _Retryable(f"{resp.status_code}")
+            raise _Retryable(f"{method} {path}: {resp.status_code}")
         if resp.status_code >= 400:
             raise RuntimeError(
                 f"Notion {method} {path} → {resp.status_code}: {resp.text[:400]}"
