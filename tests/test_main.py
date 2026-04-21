@@ -62,6 +62,9 @@ async def test_all_empty_on_last_trigger_sends_fallback(tmp_path, monkeypatch):
     monkeypatch.setenv("GMAIL_USERNAME", "u@x")
     monkeypatch.setenv("GMAIL_APP_PASSWORD", "p")
     monkeypatch.setenv("MAIL_TO", "to@x")
+    monkeypatch.setenv("NOTION_TOKEN", "ntn_x")
+    monkeypatch.setenv("NOTION_PARENT_PAGE_ID", "pid")
+    monkeypatch.setenv("NOTION_DATABASE_ID", "dbid")
 
     empty_menu = MagicMock()
     empty_menu.days = [MagicMock(categories={}) for _ in range(7)]
