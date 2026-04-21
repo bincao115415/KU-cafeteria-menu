@@ -12,6 +12,7 @@ from tenacity import (
 )
 
 from src.models import TranslatedCafeteriaMenu, TranslatedWeeklyBundle
+from src.photos import resolve_photo_url
 
 log = logging.getLogger(__name__)
 
@@ -413,6 +414,49 @@ class NotionWriter:
         if not url:
             raise RuntimeError(f"Notion /pages response missing url: {resp}")
         return url
+
+    _FAILURE_THRESHOLD = 0.3
+
+    def _photo_resolver(self) -> PhotoResolver:
+        def resolver(cafeteria_id: str, name_ko: str, name_en: str) -> str | None:
+            return resolve_photo_url(
+                cafeteria_id, name_ko, name_en,
+                unsplash_key=self._unsplash_key,
+                repo_slug=self._repo_slug,
+            )
+        return resolver
+
+    async def publish(self, bundle: TranslatedWeeklyBundle) -> PublishResult:
+        meals = group_into_meals(bundle, self._photo_resolver())
+        inserted = updated = failed = 0
+        for meal in meals:
+            status = await self.upsert_meal(meal)
+            if status == "inserted":
+                inserted += 1
+            elif status == "updated":
+                updated += 1
+            else:
+                failed += 1
+
+        total = max(1, inserted + updated + failed)
+        summary_url: str | None = None
+        if failed / total > self._FAILURE_THRESHOLD:
+            log.error(
+                "meal upsert failure rate %.0f%% > %.0f%% → skipping summary page",
+                failed / total * 100, self._FAILURE_THRESHOLD * 100,
+            )
+        else:
+            try:
+                summary_url = await self.build_summary_page(bundle, meals)
+            except Exception:
+                log.exception("summary page creation failed")
+
+        return {
+            "meals_inserted": inserted,
+            "meals_updated": updated,
+            "meals_failed": failed,
+            "summary_page_url": summary_url,
+        }
 
     async def upsert_meal(self, meal: MealRow) -> Literal["inserted", "updated", "failed"]:
         try:
