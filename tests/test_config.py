@@ -40,7 +40,11 @@ def test_load_settings_reads_env(monkeypatch):
 
 def test_load_settings_missing_key_raises(monkeypatch):
     import pytest
-    for k in ["DEEPSEEK_API_KEY", "GMAIL_USERNAME", "GMAIL_APP_PASSWORD", "MAIL_TO"]:
+    for k in [
+        "DEEPSEEK_API_KEY", "GMAIL_USERNAME", "GMAIL_APP_PASSWORD", "MAIL_TO",
+        "NOTION_TOKEN", "NOTION_PARENT_PAGE_ID", "NOTION_DATABASE_ID",
+        "UNSPLASH_ACCESS_KEY",
+    ]:
         monkeypatch.delenv(k, raising=False)
     with pytest.raises(RuntimeError, match="DEEPSEEK_API_KEY"):
         load_settings()
@@ -92,5 +96,5 @@ def test_load_settings_missing_notion_token_raises(monkeypatch):
     monkeypatch.delenv("NOTION_TOKEN", raising=False)
     from src.config import load_settings
     import pytest
-    with pytest.raises(RuntimeError, match="NOTION_TOKEN"):
+    with pytest.raises(RuntimeError, match=r"Missing required env var: NOTION_TOKEN"):
         load_settings()
