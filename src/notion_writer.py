@@ -246,6 +246,8 @@ class NotionWriter:
             method, f"{NOTION_API}{path}", content=content,
         )
         if resp.status_code == 429:
+            # Tenacity's wait_exponential (1-30s) owns backoff; Retry-After is
+            # logged for observability only to avoid compounding the wait.
             retry_after = resp.headers.get("Retry-After")
             log.warning("notion 429 on %s %s (Retry-After=%s)", method, path, retry_after)
             raise _Retryable(f"{method} {path}: 429")
