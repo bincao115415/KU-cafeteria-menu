@@ -34,7 +34,6 @@ CAFETERIA_SHORT_ZH: dict[str, str] = {
     "science_faculty": "科学·教职",
     "anam": "安岩",
     "sanhak": "产学",
-    "alumni": "校友",
     "student_center": "学生中心",
 }
 
@@ -364,9 +363,6 @@ def _cafeteria_section(
 def _summary_blocks(bundle: TranslatedWeeklyBundle, meals: list[MealRow]) -> list[dict]:
     blocks: list[dict] = []
     blocks.append(_heading(1, _summary_page_title(bundle)))
-    blocks.append(_callout(
-        f"本周新菜 {bundle.new_dish_count} 道 · {len(bundle.cafeterias)} 个食堂"
-    ))
     blocks.append(_divider())
 
     meals_by_cafe: dict[str, list[MealRow]] = {}

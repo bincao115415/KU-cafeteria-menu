@@ -1,9 +1,9 @@
 from src.config import CAFETERIAS, load_settings
 
 
-def test_cafeterias_count_is_six():
-    # 4 single-section cafeterias + 2 sub-menus of science (student/faculty)
-    assert len(CAFETERIAS) == 6
+def test_cafeterias_count_is_five():
+    # 3 single-section cafeterias + 2 sub-menus of science (student/faculty)
+    assert len(CAFETERIAS) == 5
 
 
 def test_science_split_into_student_and_faculty():
@@ -31,6 +31,10 @@ def test_cafeterias_have_required_fields():
 
 def test_songnim_removed():
     assert all(c["cafeteria_id"] != "songnim" for c in CAFETERIAS)
+
+
+def test_alumni_removed():
+    assert all(c["cafeteria_id"] != "alumni" for c in CAFETERIAS)
 
 
 def test_cafeteria_ids_are_unique():

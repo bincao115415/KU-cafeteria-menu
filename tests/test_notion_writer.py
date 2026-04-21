@@ -216,7 +216,7 @@ async def test_upsert_meal_returns_failed_on_4xx():
 def test_cafeteria_short_zh_covers_all_ids():
     assert set(CAFETERIA_SHORT_ZH) == {
         "science_student", "science_faculty",
-        "anam", "sanhak", "alumni", "student_center",
+        "anam", "sanhak", "student_center",
     }
 
 
@@ -271,8 +271,8 @@ async def test_build_summary_page_creates_expected_blocks():
     assert '"page_id": "pid"' in body
     # title mentions the Monday date
     assert "2026/04/20" in body
-    # new-dish callout number
-    assert '"5"' in body or "5 道" in body
+    # no "本周新菜 X 道" callout — the user adds their own hero imagery to the page
+    assert "本周新菜" not in body
     # both meal column headers present in the summary table
     assert "🍚" in body  # lunch
     assert "🌙" in body  # dinner
@@ -296,7 +296,6 @@ def test_summary_blocks_respect_notion_block_limits():
         ("science_faculty", "自然科学校区教职员食堂"),
         ("anam", "安岩学舍食堂"),
         ("sanhak", "产学馆食堂"),
-        ("alumni", "校友会馆食堂"),
         ("student_center", "学生会馆食堂"),
     ]:
         days = []
