@@ -341,3 +341,55 @@ async def test_build_summary_page_empty_cafeteria_renders_placeholder():
 
     assert "本周该食堂未提供数据" in captured["body"]
     assert "安岩" in captured["body"]
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_publish_happy_path(monkeypatch):
+    monkeypatch.setattr("src.notion_writer.resolve_photo_url", lambda *a, **k: None)
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        return_value=httpx.Response(200, json={"results": []})
+    )
+    pages_route = respx.post("https://api.notion.com/v1/pages").mock(
+        return_value=httpx.Response(200, json={
+            "id": "p", "url": "https://www.notion.so/summary",
+        })
+    )
+
+    bundle = _bundle_with_dishes({
+        "중식B": [DishTranslated(name_ko="A", name_zh="A", name_en="A")],
+        "석식": [DishTranslated(name_ko="B", name_zh="B", name_en="B")],
+    })
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.publish(bundle)
+
+    assert result["meals_inserted"] == 2
+    assert result["meals_updated"] == 0
+    assert result["meals_failed"] == 0
+    assert result["summary_page_url"] == "https://www.notion.so/summary"
+    assert pages_route.call_count == 3  # 2 upserts + 1 summary
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_publish_aborts_summary_when_failures_over_threshold(monkeypatch):
+    monkeypatch.setattr("src.notion_writer.resolve_photo_url", lambda *a, **k: None)
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        return_value=httpx.Response(400, json={"message": "boom"})
+    )
+    pages_route = respx.post("https://api.notion.com/v1/pages").mock(
+        return_value=httpx.Response(200, json={"id": "p", "url": "u"})
+    )
+    bundle = _bundle_with_dishes({
+        "중식B": [DishTranslated(name_ko="A", name_zh="A", name_en="A")],
+        "석식": [DishTranslated(name_ko="B", name_zh="B", name_en="B")],
+    })
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.publish(bundle)
+
+    assert result["meals_failed"] == 2
+    assert result["meals_inserted"] == 0
+    assert result["summary_page_url"] is None
+    assert pages_route.call_count == 0
