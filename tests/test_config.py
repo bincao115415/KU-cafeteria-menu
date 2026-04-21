@@ -1,8 +1,22 @@
 from src.config import CAFETERIAS, load_settings
 
 
-def test_cafeterias_count_is_five():
-    assert len(CAFETERIAS) == 5
+def test_cafeterias_count_is_six():
+    # 4 single-section cafeterias + 2 sub-menus of science (student/faculty)
+    assert len(CAFETERIAS) == 6
+
+
+def test_science_split_into_student_and_faculty():
+    ids = {c["cafeteria_id"] for c in CAFETERIAS}
+    assert "science_student" in ids
+    assert "science_faculty" in ids
+    assert "science" not in ids
+    sci = [c for c in CAFETERIAS if c["cafeteria_id"].startswith("science_")]
+    assert {c["source_url"] for c in sci} == {"https://www.korea.ac.kr/ko/504/subview.do"}
+    prices = {c["cafeteria_id"]: c["price_krw"] for c in sci}
+    assert prices == {"science_student": 6000, "science_faculty": 7000}
+    filters = {c["cafeteria_id"]: c["section_filter"] for c in sci}
+    assert filters == {"science_student": "학생식당", "science_faculty": "교직원식당"}
 
 
 def test_cafeterias_have_required_fields():

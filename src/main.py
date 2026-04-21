@@ -60,6 +60,7 @@ async def run_once(
                 cafeteria_name_zh=c["cafeteria_name_zh"],
                 cafeteria_name_en=c["cafeteria_name_en"],
                 source_url=c["source_url"],
+                section_filter=c.get("section_filter"),
             )
             menus.append(menu)
         except Exception as e:

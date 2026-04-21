@@ -12,6 +12,7 @@ from tenacity import (
     wait_exponential,
 )
 
+from src.config import CAFETERIAS
 from src.models import TranslatedCafeteriaMenu, TranslatedWeeklyBundle
 from src.photos import resolve_photo_url
 
@@ -29,13 +30,15 @@ WEEKDAY_CODE: dict[str, DayCode] = {
 }
 
 CAFETERIA_SHORT_ZH: dict[str, str] = {
-    "science": "科学",
+    "science_student": "科学·学生",
+    "science_faculty": "科学·教职",
     "anam": "安岩",
     "sanhak": "产学",
     "alumni": "校友",
     "student_center": "学生中心",
 }
 
+_CAFE_BY_ID: dict[str, dict] = {c["cafeteria_id"]: c for c in CAFETERIAS}
 _HIDDEN_CATEGORIES = {"조식", "천원의아침", "천원의아침(테이크아웃)", "아침"}
 _CONF_ORDER: dict[Confidence, int] = {"high": 0, "medium": 1, "low": 2, "failed": 3}
 
@@ -68,6 +71,7 @@ class MealRow(TypedDict):
     new_count: int
     confidence: Confidence
     source_url: str
+    price_krw: int | None
 
 
 class PublishResult(TypedDict):
@@ -87,12 +91,19 @@ def _worst_confidence(confidences: list[Confidence]) -> Confidence:
     return max(confidences, key=lambda c: _CONF_ORDER[c])
 
 
+def _format_price(price_krw: int | None) -> str | None:
+    return f"₩{price_krw:,}" if price_krw else None
+
+
 def group_into_meals(
     bundle: TranslatedWeeklyBundle,
     resolve_photo: PhotoResolver,
 ) -> list[MealRow]:
     meals: list[MealRow] = []
     for cm in bundle.cafeterias:
+        cfg = _CAFE_BY_ID.get(cm.cafeteria_id, {})
+        allowed_meals = cfg.get("allowed_meals") or ["午餐", "晚餐"]
+        price_krw = cfg.get("price_krw")
         for d in cm.days:
             if d.weekday not in WEEKDAY_CODE:
                 continue
@@ -103,6 +114,8 @@ def group_into_meals(
                 if cat_ko in _HIDDEN_CATEGORIES or not dishes:
                     continue
                 meal = classify_meal(cat_ko)
+                if meal not in allowed_meals:
+                    continue
                 bucket = by_meal[meal].setdefault(cat_ko, [])
                 for dish in dishes:
                     bucket.append({
@@ -135,33 +148,57 @@ def group_into_meals(
                     "new_count": sum(1 for ln in all_lines if ln["is_new"]),
                     "confidence": _worst_confidence(conf_by_meal[meal]),
                     "source_url": cm.source_url,
+                    "price_krw": price_krw,
                 })
     return meals
 
 
-# --- HTTP plumbing (used by Tasks 5-7) ---
+# --- HTTP plumbing ---
 
 class _Retryable(Exception):
     """Raised on 429/5xx to trigger tenacity backoff."""
 
 
 _DISHES_SOFT_LIMIT = 2000  # Notion rich_text content limit
+_TABLE_CELL_SOFT_LIMIT = 1800
 
 
-def _render_dishes_text(categories: list[CategoryBlock]) -> str:
+def _render_dish_lines(categories: list[CategoryBlock], *, include_labels: bool) -> list[str]:
     lines: list[str] = []
     for blk in categories:
-        lines.append(f"【{blk['label_ko']}】")
+        if include_labels:
+            lines.append(f"【{blk['label_ko']}】")
         for dish in blk["dishes"]:
             star = " ★" if dish["is_new"] else ""
             zh = dish["name_zh"] or dish["name_ko"]
             en = dish["name_en"] or ""
             lines.append(f"• {zh}{star} / {en}".rstrip(" /"))
-        lines.append("")
+        if include_labels:
+            lines.append("")
+    return lines
+
+
+def _render_dishes_text(meal: MealRow) -> str:
+    header: list[str] = []
+    price = _format_price(meal["price_krw"])
+    if price:
+        header.append(price)
+    lines = header + _render_dish_lines(meal["categories"], include_labels=True)
     text = "\n".join(lines).rstrip()
     if len(text) <= _DISHES_SOFT_LIMIT:
         return text
     truncated = text[: _DISHES_SOFT_LIMIT - 24].rstrip()
+    dropped = text[len(truncated):].count("\n•")
+    return f"{truncated}\n… (+{dropped} more)"
+
+
+def _render_table_cell(meal: MealRow) -> str:
+    """Compact dish list for a single summary-table cell (no category labels)."""
+    lines = _render_dish_lines(meal["categories"], include_labels=False)
+    text = "\n".join(lines).rstrip()
+    if len(text) <= _TABLE_CELL_SOFT_LIMIT:
+        return text
+    truncated = text[: _TABLE_CELL_SOFT_LIMIT - 16].rstrip()
     dropped = text[len(truncated):].count("\n•")
     return f"{truncated}\n… (+{dropped} more)"
 
@@ -190,7 +227,7 @@ def _meal_properties(meal: MealRow) -> dict:
             }
             for url in photo_urls[:25]  # Notion limit: 25 files per property
         ]},
-        "Dishes": {"rich_text": [{"text": {"content": _render_dishes_text(meal["categories"])}}]},
+        "Dishes": {"rich_text": [{"text": {"content": _render_dishes_text(meal)}}]},
         "Dish Count": {"number": meal["dish_count"]},
         "New Count": {"number": meal["new_count"]},
         "Confidence": {"select": {"name": meal["confidence"]}},
@@ -234,68 +271,93 @@ def _divider() -> dict:
     return {"object": "block", "type": "divider", "divider": {}}
 
 
-def _bullet(spans: list[dict]) -> dict:
+def _external_image(url: str) -> dict:
     return {
-        "object": "block", "type": "bulleted_list_item",
-        "bulleted_list_item": {"rich_text": spans},
+        "object": "block", "type": "image",
+        "image": {"type": "external", "external": {"url": url}},
     }
 
 
-def _toggle(text: str, children: list[dict]) -> dict:
-    return {
-        "object": "block", "type": "toggle",
-        "toggle": {"rich_text": [_rt(text)], "children": children},
+def _table(columns: list[str], rows: list[list[str]]) -> dict:
+    header_row = {
+        "object": "block", "type": "table_row",
+        "table_row": {"cells": [[_rt(c)] for c in columns]},
     }
-
-
-def _day_toggle_children(categories: list[CategoryBlock]) -> list[dict]:
-    blocks: list[dict] = []
-    for blk in categories:
-        blocks.append(_paragraph([_rt(f"【{blk['label_ko']}】", bold=True)]))
-        for dish in blk["dishes"]:
-            star = " ★" if dish["is_new"] else ""
-            zh = dish["name_zh"] or dish["name_ko"]
-            en = dish["name_en"]
-            text = f"{zh}{star} / {en}" if en else f"{zh}{star}"
-            blocks.append(_bullet([_rt(text)]))
-    return blocks
+    body_rows = [
+        {
+            "object": "block", "type": "table_row",
+            "table_row": {"cells": [[_rt(cell)] for cell in row]},
+        }
+        for row in rows
+    ]
+    return {
+        "object": "block", "type": "table",
+        "table": {
+            "table_width": len(columns),
+            "has_column_header": True,
+            "has_row_header": False,
+            "children": [header_row] + body_rows,
+        },
+    }
 
 
 _MEAL_EMOJI: dict[Meal, str] = {"午餐": "🍚", "晚餐": "🌙"}
+_DAY_ORDER: list[DayCode] = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 
 
 def _summary_page_title(bundle: TranslatedWeeklyBundle) -> str:
     return f"{bundle.week_start.strftime('%Y/%m/%d')} 周菜单 · KU 食堂"
 
 
+def _cafeteria_header_text(cm: TranslatedCafeteriaMenu, price_krw: int | None) -> str:
+    base = f"🏛 {cm.cafeteria_name_zh} · {cm.cafeteria_name_en}"
+    price = _format_price(price_krw)
+    return f"{base}  {price}" if price else base
+
+
+def _meal_column_label(meal: Meal, price_krw: int | None) -> str:
+    emoji = _MEAL_EMOJI[meal]
+    price = _format_price(price_krw)
+    return f"{emoji} {meal} ({price})" if price else f"{emoji} {meal}"
+
+
 def _cafeteria_section(
     cm: TranslatedCafeteriaMenu, meals: list[MealRow]
 ) -> list[dict]:
-    """Build blocks for one cafeteria: H2 + paragraph + (H3 + toggles per meal)."""
-    blocks: list[dict] = []
-    header = f"🏛 {cm.cafeteria_name_zh} · {cm.cafeteria_name_en}"
-    blocks.append(_heading(2, header))
+    """Build blocks for one cafeteria: H2 + hero image + source link + meal table."""
+    cfg = _CAFE_BY_ID.get(cm.cafeteria_id, {})
+    allowed_meals: list[Meal] = cfg.get("allowed_meals") or ["午餐", "晚餐"]
+    price_krw = cfg.get("price_krw")
+    hero = cfg.get("hero_image_url")
 
-    if not meals:
-        blocks.append(_paragraph([_rt("本周该食堂未提供数据", italic=True)]))
-        return blocks
-
+    blocks: list[dict] = [_heading(2, _cafeteria_header_text(cm, price_krw))]
+    if hero:
+        blocks.append(_external_image(hero))
     blocks.append(_paragraph([
         _rt("📍 "),
         _rt("原始页面 →", link=cm.source_url),
     ]))
 
-    by_meal: dict[Meal, list[MealRow]] = {"午餐": [], "晚餐": []}
-    for m in meals:
-        by_meal[m["meal"]].append(m)
+    if not meals:
+        blocks.append(_paragraph([_rt("本周该食堂未提供数据", italic=True)]))
+        return blocks
 
-    for meal in ("午餐", "晚餐"):
-        if not by_meal[meal]:
-            continue
-        blocks.append(_heading(3, f"{_MEAL_EMOJI[meal]} {meal}"))
-        for m in sorted(by_meal[meal], key=lambda x: x["date"]):
-            toggle_title = f"{m['day']} · {m['date'].isoformat()}"
-            blocks.append(_toggle(toggle_title, _day_toggle_children(m["categories"])))
+    by_key: dict[tuple[DayCode, Meal], MealRow] = {
+        (m["day"], m["meal"]): m for m in meals
+    }
+    columns = ["日期"] + [_meal_column_label(meal, price_krw) for meal in allowed_meals]
+    rows: list[list[str]] = []
+    for day in _DAY_ORDER:
+        date_str = next(
+            (m["date"].strftime("%m/%d") for m in meals if m["day"] == day),
+            "—",
+        )
+        row = [f"{day} · {date_str}"]
+        for meal in allowed_meals:
+            cell = by_key.get((day, meal))
+            row.append(_render_table_cell(cell) if cell else "—")
+        rows.append(row)
+    blocks.append(_table(columns, rows))
     return blocks
 
 

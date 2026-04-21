@@ -16,6 +16,7 @@ _WEEKDAY_KO_TO_EN = {
 _WEEKDAYS_ORDER = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 _DATE_RE = re.compile(r"(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})")
 _EMPTY_MARKER = "등록된 식단내용이"
+_SECTION_MARKER_RE = re.compile(r"\[([^\]]+)\]")
 
 
 def _find_menu_table(soup: BeautifulSoup):
@@ -52,6 +53,32 @@ def _parse_day_header(text: str) -> tuple[date | None, str | None]:
     return dt, wd
 
 
+def _filter_section(cell_text: str, section_filter: str) -> str:
+    """Keep only lines belonging to the section whose [label] matches section_filter.
+
+    Input format (seen on 504/subview.do):
+        [학생식당] 6,000₩
+        dish1 dish2 ...
+        (사이드메뉴: ...)
+        [교직원식당] 7,000₩
+        dish3 dish4 ...
+
+    Header lines (matching [...]) are stripped; non-header lines belong to the
+    most recent section above them. If no header is seen, lines are kept as-is
+    (caller expected section_filter=None in that case, but we tolerate it).
+    """
+    kept: list[str] = []
+    current: str | None = None
+    for line in cell_text.splitlines():
+        m = _SECTION_MARKER_RE.match(line.strip())
+        if m:
+            current = m.group(1).strip()
+            continue
+        if current is None or current == section_filter:
+            kept.append(line)
+    return "\n".join(kept)
+
+
 def _split_dishes(cell_text: str) -> list[DishRaw]:
     t = cell_text.strip()
     if not t or _EMPTY_MARKER in t:
@@ -73,6 +100,7 @@ def parse_cafeteria_page(
     cafeteria_name_zh: str,
     cafeteria_name_en: str,
     source_url: str,
+    section_filter: str | None = None,
 ) -> CafeteriaMenu:
     soup = BeautifulSoup(html, "lxml")
     table = _find_menu_table(soup)
@@ -117,6 +145,8 @@ def parse_cafeteria_page(
             else:
                 continue
             dish_text = content_cell.get_text("\n", strip=True)
+            if section_filter:
+                dish_text = _filter_section(dish_text, section_filter)
             dishes = _split_dishes(dish_text)
             if category:
                 current_cats.setdefault(category, []).extend(dishes)

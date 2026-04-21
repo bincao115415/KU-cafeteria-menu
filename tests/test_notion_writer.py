@@ -23,9 +23,10 @@ def _bundle_with_dishes(categories: dict[str, list[DishTranslated]]) -> Translat
     day = TranslatedDaySection(
         date=date(2026, 4, 20), weekday="MON", categories=categories
     )
+    # anam allows both lunch and dinner with no price — keeps fixtures simple.
     cm = TranslatedCafeteriaMenu(
-        cafeteria_id="science",
-        cafeteria_name_ko="자연계", cafeteria_name_zh="自然科学", cafeteria_name_en="Science",
+        cafeteria_id="anam",
+        cafeteria_name_ko="안암학사", cafeteria_name_zh="安岩学舍食堂", cafeteria_name_en="Anam",
         week_start=date(2026, 4, 20),
         days=[day],
         source_url="https://example.com/s",
@@ -97,7 +98,7 @@ def test_group_attaches_photo_urls():
 
     [meal] = group_into_meals(bundle, resolver)
     photos = [ln["photo_url"] for blk in meal["categories"] for ln in blk["dishes"]]
-    assert photos == ["https://example.com/science/김치.jpg", None]
+    assert photos == ["https://example.com/anam/김치.jpg", None]
 
 
 def test_group_skips_weekend_days():
@@ -105,7 +106,7 @@ def test_group_skips_weekend_days():
         "중식B": [DishTranslated(name_ko="A", name_zh="A", name_en="A")]
     })
     cm = TranslatedCafeteriaMenu(
-        cafeteria_id="science",
+        cafeteria_id="anam",
         cafeteria_name_ko="x", cafeteria_name_zh="x", cafeteria_name_en="x",
         week_start=date(2026, 4, 20), days=[sat],
         source_url="u", fetched_at=datetime(2026, 4, 20, 9, 0),
@@ -119,9 +120,9 @@ def _meal(**overrides):
         "week_monday": date(2026, 4, 20),
         "day": "Mon",
         "date": date(2026, 4, 20),
-        "cafeteria_id": "science",
-        "cafeteria_name_zh_full": "自然科学校区学生食堂",
-        "cafeteria_name_en_full": "Science Cafeteria",
+        "cafeteria_id": "anam",
+        "cafeteria_name_zh_full": "安岩学舍食堂",
+        "cafeteria_name_en_full": "Anam Dormitory Cafeteria",
         "meal": "午餐",
         "categories": [
             {"label_ko": "중식B", "dishes": [
@@ -132,7 +133,8 @@ def _meal(**overrides):
         "dish_count": 1,
         "new_count": 1,
         "confidence": "high",
-        "source_url": "https://korea.ac.kr/ko/504",
+        "source_url": "https://korea.ac.kr/ko/505",
+        "price_krw": None,
     }
     base.update(overrides)
     return base
@@ -213,7 +215,8 @@ async def test_upsert_meal_returns_failed_on_4xx():
 
 def test_cafeteria_short_zh_covers_all_ids():
     assert set(CAFETERIA_SHORT_ZH) == {
-        "science", "anam", "sanhak", "alumni", "student_center",
+        "science_student", "science_faculty",
+        "anam", "sanhak", "alumni", "student_center",
     }
 
 
@@ -226,10 +229,16 @@ def test_render_dishes_truncates_over_soft_limit():
         }
         for _ in range(40)  # ~40 * ~105 chars/line = ~4200 chars
     ]
-    categories = [{"label_ko": "중식B", "dishes": dishes}]
-    out = _render_dishes_text(categories)
+    meal = _meal(categories=[{"label_ko": "중식B", "dishes": dishes}])
+    out = _render_dishes_text(meal)
     assert len(out) <= 2000
     assert "more)" in out  # truncation suffix present
+
+
+def test_render_dishes_text_includes_price_when_set():
+    meal = _meal(price_krw=6000)
+    out = _render_dishes_text(meal)
+    assert out.startswith("₩6,000")
 
 
 @pytest.mark.asyncio
@@ -264,14 +273,16 @@ async def test_build_summary_page_creates_expected_blocks():
     assert "2026/04/20" in body
     # new-dish callout number
     assert '"5"' in body or "5 道" in body
-    # both meal headers present
+    # both meal column headers present in the summary table
     assert "🍚" in body  # lunch
     assert "🌙" in body  # dinner
-    # category heading present
-    assert "【중식B】" in body
-    assert "【석식】" in body
+    # table cells omit category labels to stay compact
+    assert "【중식B】" not in body
+    assert "【석식】" not in body
     # dish name present with star
     assert "泡菜汤 ★ / Kimchi Stew" in body
+    # hero image for anam is embedded in the cafeteria section
+    assert "heroes/anam.jpg" in body
 
 
 def test_summary_blocks_respect_notion_block_limits():
@@ -281,7 +292,8 @@ def test_summary_blocks_respect_notion_block_limits():
 
     cafeterias = []
     for cid, zh in [
-        ("science", "自然科学校区学生食堂"),
+        ("science_student", "自然科学校区学生食堂"),
+        ("science_faculty", "自然科学校区教职员食堂"),
         ("anam", "安岩学舍食堂"),
         ("sanhak", "产学馆食堂"),
         ("alumni", "校友会馆食堂"),
@@ -423,8 +435,8 @@ async def test_publish_builds_summary_when_failure_rate_below_threshold(monkeypa
         for i, wd in enumerate(["MON", "TUE"])
     ]
     cm = TranslatedCafeteriaMenu(
-        cafeteria_id="science",
-        cafeteria_name_ko="x", cafeteria_name_zh="自然科学", cafeteria_name_en="Science",
+        cafeteria_id="anam",
+        cafeteria_name_ko="x", cafeteria_name_zh="安岩学舍食堂", cafeteria_name_en="Anam",
         week_start=date(2026, 4, 20), days=days,
         source_url="u", fetched_at=datetime(2026, 4, 20, 9, 0),
     )

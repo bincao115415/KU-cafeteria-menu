@@ -34,14 +34,25 @@ async def fetch_one(url: str, *, timeout: float = 30.0) -> str:
 async def fetch_all(
     cafeterias: list[dict],
 ) -> list[tuple[str, str | None, str | None]]:
-    """Returns [(cafeteria_id, html_or_None, error_or_None), ...]."""
+    """Returns [(cafeteria_id, html_or_None, error_or_None), ...].
 
-    async def one(c: dict) -> tuple[str, str | None, str | None]:
+    URLs are deduped: each unique source_url is fetched exactly once, then the
+    html (or error) is fanned out to every cafeteria entry pointing to it.
+    """
+
+    unique_urls = list({c["source_url"] for c in cafeterias})
+
+    async def one(url: str) -> tuple[str, str | None, str | None]:
         try:
-            html = await fetch_one(c["source_url"])
-            return (c["cafeteria_id"], html, None)
+            html = await fetch_one(url)
+            return (url, html, None)
         except Exception as e:
-            log.warning("fetch failed for %s: %s", c["cafeteria_id"], e)
-            return (c["cafeteria_id"], None, str(e))
+            log.warning("fetch failed for %s: %s", url, e)
+            return (url, None, str(e))
 
-    return await asyncio.gather(*[one(c) for c in cafeterias])
+    results = await asyncio.gather(*[one(u) for u in unique_urls])
+    by_url = {url: (html, err) for url, html, err in results}
+    return [
+        (c["cafeteria_id"], by_url[c["source_url"]][0], by_url[c["source_url"]][1])
+        for c in cafeterias
+    ]

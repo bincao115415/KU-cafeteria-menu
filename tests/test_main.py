@@ -99,12 +99,12 @@ async def test_happy_path_publishes_to_notion_and_persists_state(tmp_path, monke
 
     non_empty_menu = MagicMock()
     non_empty_menu.days = [MagicMock(categories={"중식B": [MagicMock()]})]
-    non_empty_menu.cafeteria_id = "science"
+    non_empty_menu.cafeteria_id = "science_student"
     non_empty_menu.errors = []
 
     # Real pydantic model — TranslatedWeeklyBundle validates its cafeterias list.
     translated = TranslatedCafeteriaMenu(
-        cafeteria_id="science",
+        cafeteria_id="science_student",
         cafeteria_name_ko="x", cafeteria_name_zh="x", cafeteria_name_en="x",
         week_start=date(2026, 4, 20), days=[],
         source_url="https://example.com",
