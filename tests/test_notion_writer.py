@@ -13,6 +13,7 @@ from src.models import (
 from src.notion_writer import (
     CAFETERIA_SHORT_ZH,
     NotionWriter,
+    _render_dishes_text,
     classify_meal,
     group_into_meals,
 )
@@ -158,6 +159,9 @@ async def test_upsert_meal_inserts_when_not_found():
     assert "泡菜汤" in body  # zh name appears in Dishes render
     assert "김치찌개" not in body  # Korean excluded from dish render by design
     assert "★" in body  # is_new marker
+    # Regression guard: switching from httpx json= to content=bytes
+    # must keep the client's default Content-Type header intact.
+    assert created.calls.last.request.headers["content-type"] == "application/json"
 
 
 @pytest.mark.asyncio
@@ -211,3 +215,18 @@ def test_cafeteria_short_zh_covers_all_ids():
     assert set(CAFETERIA_SHORT_ZH) == {
         "science", "anam", "sanhak", "alumni", "student_center",
     }
+
+
+def test_render_dishes_truncates_over_soft_limit():
+    # Build a block whose rendered text will exceed _DISHES_SOFT_LIMIT=2000.
+    dishes = [
+        {
+            "name_ko": "x", "name_zh": "x" * 50, "name_en": "x" * 50,
+            "is_new": False, "photo_url": None,
+        }
+        for _ in range(40)  # ~40 * ~105 chars/line = ~4200 chars
+    ]
+    categories = [{"label_ko": "중식B", "dishes": dishes}]
+    out = _render_dishes_text(categories)
+    assert len(out) <= 2000
+    assert "more)" in out  # truncation suffix present
