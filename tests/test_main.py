@@ -15,6 +15,13 @@ def _seed(tmp_path, state: dict) -> None:
     (tmp_path / "data" / "state.json").write_text(json.dumps(state))
 
 
+def _set_notion_env(monkeypatch):
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "dk")
+    monkeypatch.setenv("NOTION_TOKEN", "tk")
+    monkeypatch.setenv("NOTION_PARENT_PAGE_ID", "pid")
+    monkeypatch.setenv("NOTION_DATABASE_ID", "dbid")
+
+
 @pytest.mark.asyncio
 @freeze_time("2026-04-20 01:30:00")  # Mon 10:30 KST
 async def test_skip_when_already_sent_this_week(tmp_path, monkeypatch):
@@ -55,16 +62,10 @@ async def test_all_empty_on_first_trigger_sets_pending(tmp_path, monkeypatch):
 
 @pytest.mark.asyncio
 @freeze_time("2026-04-20 01:30:00")
-async def test_all_empty_on_last_trigger_sends_fallback(tmp_path, monkeypatch):
+async def test_all_empty_on_last_trigger_silent(tmp_path, monkeypatch):
     _seed(tmp_path, {"last_sent_week": None, "last_run_at": None, "status": "idle"})
     monkeypatch.setattr("src.main.DATA", tmp_path / "data")
-    monkeypatch.setenv("DEEPSEEK_API_KEY", "k")
-    monkeypatch.setenv("GMAIL_USERNAME", "u@x")
-    monkeypatch.setenv("GMAIL_APP_PASSWORD", "p")
-    monkeypatch.setenv("MAIL_TO", "to@x")
-    monkeypatch.setenv("NOTION_TOKEN", "ntn_x")
-    monkeypatch.setenv("NOTION_PARENT_PAGE_ID", "pid")
-    monkeypatch.setenv("NOTION_DATABASE_ID", "dbid")
+    _set_notion_env(monkeypatch)
 
     empty_menu = MagicMock()
     empty_menu.days = [MagicMock(categories={}) for _ in range(7)]
@@ -76,12 +77,10 @@ async def test_all_empty_on_last_trigger_sends_fallback(tmp_path, monkeypatch):
     with (
         patch("src.main.fetch_all", side_effect=fake_fetch),
         patch("src.main.parse_cafeteria_page", return_value=empty_menu),
-        patch("src.main.send_mail") as sm,
         patch("src.main.git_commit_and_push", return_value=True),
     ):
         result = await run_once(trigger_index=2, total_triggers=3)
 
-    assert result == "failed_sent_fallback"
-    sm.assert_called_once()
+    assert result == "failed_silent"
     state = json.loads((tmp_path / "data" / "state.json").read_text())
-    assert state["status"] == "failed_sent"
+    assert state["status"] == "failed_silent"

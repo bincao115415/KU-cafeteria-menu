@@ -8,10 +8,9 @@ from pathlib import Path
 from src.cache import StateFile, TranslationCache, git_commit_and_push
 from src.config import CAFETERIAS, load_settings
 from src.deepseek_client import DeepSeekClient
-from src.mailer import send_mail
 from src.models import TranslatedWeeklyBundle
+from src.notion_writer import NotionWriter
 from src.parser import parse_cafeteria_page
-from src.renderer import render_email
 from src.scraper import fetch_all
 from src.translator import Translator
 from src.utils import KST, get_current_monday_kst
@@ -72,15 +71,15 @@ async def run_once(
     if not non_empty:
         is_last = trigger_index == total_triggers - 1
         if is_last:
-            _send_fallback_email(this_monday, fetch_errors, dry_run=dry_run)
+            log.error("no menu data after %d triggers; errors=%s", total_triggers, fetch_errors)
             state.update(
                 last_sent_week=this_monday.isoformat(),
                 last_run_at=datetime.now(KST).isoformat(timespec="seconds"),
-                status="failed_sent",
+                status="failed_silent",
             )
             state.persist()
-            _commit_state(this_monday, "failed_sent")
-            return "failed_sent_fallback"
+            _commit_state(this_monday, "failed_silent")
+            return "failed_silent"
         state.update(
             last_sent_week=None,
             last_run_at=datetime.now(KST).isoformat(timespec="seconds"),
@@ -118,18 +117,23 @@ async def run_once(
         global_errors=global_errors,
     )
 
-    html, subject, text = render_email(bundle)
-
     if dry_run:
-        print(subject)
-        print(text)
+        print(f"DRY RUN: would publish {len(translated_list)} cafeterias, "
+              f"{new_count} new dishes, week {this_monday}")
         return "dry_run_ok"
 
-    send_mail(
-        host="smtp.gmail.com", port=465,
-        username=settings.gmail_username, password=settings.gmail_app_password,
-        sender=settings.gmail_username, recipient=settings.mail_to,
-        subject=subject, html=html, text=text,
+    async with NotionWriter(
+        token=settings.notion_token,
+        database_id=settings.notion_database_id,
+        parent_page_id=settings.notion_parent_page_id,
+        unsplash_key=settings.unsplash_access_key,
+    ) as writer:
+        result = await writer.publish(bundle)
+
+    log.info(
+        "notion publish: inserted=%d updated=%d failed=%d summary=%s",
+        result["meals_inserted"], result["meals_updated"],
+        result["meals_failed"], result["summary_page_url"],
     )
 
     cache.persist()
@@ -150,29 +154,7 @@ async def run_once(
         [DATA / "translations.json", DATA / "state.json"],
         message=msg, repo_dir=REPO,
     )
-    return "sent"
-
-
-def _send_fallback_email(this_monday, errors: list[str], *, dry_run: bool) -> None:
-    settings = load_settings()
-    subject = f"[高大食堂] ⚠ {this_monday} 菜单抓取失败"
-    body = (
-        "三次尝试均未抓到本周菜单。\n\n错误:\n"
-        + "\n".join(f"  - {e}" for e in errors)
-        + "\n\n请访问原页面:https://www.korea.ac.kr/ko/503/subview.do\n"
-        "下次自动推送:下周一 10:30 KST"
-    )
-    html = f"<pre style='font-family:monospace'>{body}</pre>"
-    if dry_run:
-        print(subject)
-        print(body)
-        return
-    send_mail(
-        host="smtp.gmail.com", port=465,
-        username=settings.gmail_username, password=settings.gmail_app_password,
-        sender=settings.gmail_username, recipient=settings.mail_to,
-        subject=subject, html=html, text=body,
-    )
+    return "published"
 
 
 def _commit_state(this_monday, status: str) -> None:

@@ -26,22 +26,20 @@ def test_cafeteria_ids_are_unique():
 
 def test_load_settings_reads_env(monkeypatch):
     monkeypatch.setenv("DEEPSEEK_API_KEY", "k")
-    monkeypatch.setenv("GMAIL_USERNAME", "u@x")
-    monkeypatch.setenv("GMAIL_APP_PASSWORD", "p")
-    monkeypatch.setenv("MAIL_TO", "to@x")
     monkeypatch.setenv("NOTION_TOKEN", "ntn_x")
     monkeypatch.setenv("NOTION_PARENT_PAGE_ID", "pid")
     monkeypatch.setenv("NOTION_DATABASE_ID", "dbid")
     s = load_settings()
     assert s.deepseek_api_key == "k"
-    assert s.gmail_username == "u@x"
-    assert s.mail_to == "to@x"
+    assert s.notion_token == "ntn_x"
+    assert s.notion_parent_page_id == "pid"
+    assert s.notion_database_id == "dbid"
 
 
 def test_load_settings_missing_key_raises(monkeypatch):
     import pytest
     for k in [
-        "DEEPSEEK_API_KEY", "GMAIL_USERNAME", "GMAIL_APP_PASSWORD", "MAIL_TO",
+        "DEEPSEEK_API_KEY",
         "NOTION_TOKEN", "NOTION_PARENT_PAGE_ID", "NOTION_DATABASE_ID",
         "UNSPLASH_ACCESS_KEY",
     ]:
@@ -52,9 +50,6 @@ def test_load_settings_missing_key_raises(monkeypatch):
 
 def test_load_settings_with_notion_fields(monkeypatch):
     monkeypatch.setenv("DEEPSEEK_API_KEY", "dk")
-    monkeypatch.setenv("GMAIL_USERNAME", "u@x")
-    monkeypatch.setenv("GMAIL_APP_PASSWORD", "p")
-    monkeypatch.setenv("MAIL_TO", "to@x")
     monkeypatch.setenv("NOTION_TOKEN", "ntn_x")
     monkeypatch.setenv("NOTION_PARENT_PAGE_ID", "pid")
     monkeypatch.setenv("NOTION_DATABASE_ID", "dbid")
@@ -70,9 +65,6 @@ def test_load_settings_with_notion_fields(monkeypatch):
 def test_load_settings_with_unsplash(monkeypatch):
     for k, v in {
         "DEEPSEEK_API_KEY": "dk",
-        "GMAIL_USERNAME": "u@x",
-        "GMAIL_APP_PASSWORD": "p",
-        "MAIL_TO": "to@x",
         "NOTION_TOKEN": "ntn_x",
         "NOTION_PARENT_PAGE_ID": "pid",
         "NOTION_DATABASE_ID": "dbid",
@@ -86,9 +78,6 @@ def test_load_settings_with_unsplash(monkeypatch):
 def test_load_settings_missing_notion_token_raises(monkeypatch):
     for k, v in {
         "DEEPSEEK_API_KEY": "dk",
-        "GMAIL_USERNAME": "u@x",
-        "GMAIL_APP_PASSWORD": "p",
-        "MAIL_TO": "to@x",
         "NOTION_PARENT_PAGE_ID": "pid",
         "NOTION_DATABASE_ID": "dbid",
     }.items():

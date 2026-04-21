@@ -53,9 +53,6 @@ CAFETERIAS: list[dict] = [
 @dataclass(frozen=True)
 class Settings:
     deepseek_api_key: str
-    gmail_username: str
-    gmail_app_password: str
-    mail_to: str
     notion_token: str
     notion_parent_page_id: str
     notion_database_id: str
@@ -71,9 +68,6 @@ def load_settings() -> Settings:
 
     return Settings(
         deepseek_api_key=req("DEEPSEEK_API_KEY"),
-        gmail_username=req("GMAIL_USERNAME"),
-        gmail_app_password=req("GMAIL_APP_PASSWORD"),
-        mail_to=req("MAIL_TO"),
         notion_token=req("NOTION_TOKEN"),
         notion_parent_page_id=req("NOTION_PARENT_PAGE_ID"),
         notion_database_id=req("NOTION_DATABASE_ID"),
