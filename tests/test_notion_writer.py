@@ -393,3 +393,76 @@ async def test_publish_aborts_summary_when_failures_over_threshold(monkeypatch):
     assert result["meals_inserted"] == 0
     assert result["summary_page_url"] is None
     assert pages_route.call_count == 0
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_publish_builds_summary_when_failure_rate_below_threshold(monkeypatch):
+    # 1 failure out of 4 meals = 25%, below 30% threshold → summary still built.
+    monkeypatch.setattr("src.notion_writer.resolve_photo_url", lambda *a, **k: None)
+    query_responses = iter([
+        httpx.Response(400, json={"message": "boom"}),  # first meal upsert fails
+        httpx.Response(200, json={"results": []}),
+        httpx.Response(200, json={"results": []}),
+        httpx.Response(200, json={"results": []}),
+    ])
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        side_effect=lambda req: next(query_responses)
+    )
+    respx.post("https://api.notion.com/v1/pages").mock(
+        return_value=httpx.Response(200, json={"id": "p", "url": "https://www.notion.so/s"})
+    )
+
+    # Build 4 meals across 2 days (2 cafeterias × 2 days would be simpler, but
+    # _bundle_with_dishes gives 1 day × 1 cafeteria so we expand inline).
+    days = [
+        TranslatedDaySection(date=date(2026, 4, 20 + i), weekday=wd, categories={
+            "중식B": [DishTranslated(name_ko=f"L{i}", name_zh=f"L{i}", name_en=f"L{i}")],
+            "석식": [DishTranslated(name_ko=f"D{i}", name_zh=f"D{i}", name_en=f"D{i}")],
+        })
+        for i, wd in enumerate(["MON", "TUE"])
+    ]
+    cm = TranslatedCafeteriaMenu(
+        cafeteria_id="science",
+        cafeteria_name_ko="x", cafeteria_name_zh="自然科学", cafeteria_name_en="Science",
+        week_start=date(2026, 4, 20), days=days,
+        source_url="u", fetched_at=datetime(2026, 4, 20, 9, 0),
+    )
+    bundle = TranslatedWeeklyBundle(week_start=date(2026, 4, 20), cafeterias=[cm])
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.publish(bundle)
+
+    assert result["meals_failed"] == 1
+    assert result["meals_inserted"] == 3
+    assert result["summary_page_url"] == "https://www.notion.so/s"
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_publish_returns_none_summary_url_when_summary_build_raises(monkeypatch):
+    # Upserts succeed (below threshold), but summary /pages call returns 4xx →
+    # build_summary_page raises → publish swallows, returns summary_page_url=None.
+    monkeypatch.setattr("src.notion_writer.resolve_photo_url", lambda *a, **k: None)
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        return_value=httpx.Response(200, json={"results": []})
+    )
+    pages_responses = iter([
+        httpx.Response(200, json={"id": "m1"}),  # upsert 1
+        httpx.Response(200, json={"id": "m2"}),  # upsert 2
+        httpx.Response(400, json={"message": "summary blew up"}),  # summary
+    ])
+    respx.post("https://api.notion.com/v1/pages").mock(
+        side_effect=lambda req: next(pages_responses)
+    )
+    bundle = _bundle_with_dishes({
+        "중식B": [DishTranslated(name_ko="A", name_zh="A", name_en="A")],
+        "석식": [DishTranslated(name_ko="B", name_zh="B", name_en="B")],
+    })
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.publish(bundle)
+
+    assert result["meals_inserted"] == 2
+    assert result["meals_failed"] == 0
+    assert result["summary_page_url"] is None
