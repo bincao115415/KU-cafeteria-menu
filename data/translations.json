@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-04-21T14:18:22+09:00",
+  "updated_at": "2026-04-21T15:05:58+09:00",
   "entries": {
     "&양념장": {
       "zh": "调味酱",
@@ -28,6 +28,16 @@
       "note_zh": "使用韩国本土捕捞的青花鱼",
       "note_en": "Made with mackerel caught in Korean waters",
       "learned_at": "2026-04-20",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "(낙지:베트남산)": {
+      "zh": "越南产章鱼",
+      "en": "Vietnamese Octopus",
+      "note_zh": "使用越南进口的章鱼制作",
+      "note_en": "Made with imported octopus from Vietnam",
+      "learned_at": "2026-04-21",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -128,6 +138,16 @@
       "note_zh": "使用进口大豆制成的豆渣炖煮而成",
       "note_en": "Made with soybean pulp from imported beans",
       "learned_at": "2026-04-20",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "(통등심돈까스/돈육:국내산)": {
+      "zh": "猪排套餐",
+      "en": "Pork Cutlet Set",
+      "note_zh": "使用国产猪里脊肉炸制",
+      "note_en": "Made with domestic pork loin, deep-fried",
+      "learned_at": "2026-04-21",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
