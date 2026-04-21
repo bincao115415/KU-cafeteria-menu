@@ -56,6 +56,10 @@ class Settings:
     gmail_username: str
     gmail_app_password: str
     mail_to: str
+    notion_token: str
+    notion_parent_page_id: str
+    notion_database_id: str
+    unsplash_access_key: str | None = None
 
 
 def load_settings() -> Settings:
@@ -70,4 +74,8 @@ def load_settings() -> Settings:
         gmail_username=req("GMAIL_USERNAME"),
         gmail_app_password=req("GMAIL_APP_PASSWORD"),
         mail_to=req("MAIL_TO"),
+        notion_token=req("NOTION_TOKEN"),
+        notion_parent_page_id=req("NOTION_PARENT_PAGE_ID"),
+        notion_database_id=req("NOTION_DATABASE_ID"),
+        unsplash_access_key=os.environ.get("UNSPLASH_ACCESS_KEY") or None,
     )

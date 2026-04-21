@@ -12,6 +12,7 @@ dependencies = [
     "premailer>=3.10",
     "python-dateutil>=2.9",
     "tenacity>=8.2",
+    "python-slugify>=8.0",
 ]
 
 [project.optional-dependencies]
