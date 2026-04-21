@@ -17,6 +17,7 @@ def slugify_ko(name_ko: str) -> str:
     s = slugify(name_ko, lowercase=True)
     if s:
         return s
+    log.debug("slugify_ko fallback to sha1 for %r", name_ko)
     return hashlib.sha1(name_ko.encode("utf-8")).hexdigest()[:10]
 
 
@@ -34,11 +35,14 @@ def resolve_photo_url(
     Local convention: files live at `<data_dir>/photos/<cafeteria_id>/<slug>.<ext>`,
     slug = slugify_ko(name_ko). For real deployment `data_dir == <repo>/data`, so the
     public URL uses the `data/photos/...` path under the GitHub raw host.
+    First match wins; extensions are checked in order: `jpg`, `jpeg`, `png`, `webp`.
     """
     slug = slugify_ko(name_ko)
     cafe_dir = data_dir / "photos" / cafeteria_id
     for ext in _PHOTO_EXTS:
-        if (cafe_dir / f"{slug}.{ext}").exists():
+        candidate = cafe_dir / f"{slug}.{ext}"
+        if candidate.is_file():
+            log.debug("local photo hit: %s/%s → .%s", cafeteria_id, name_ko, ext)
             return (
                 f"https://raw.githubusercontent.com/{repo_slug}/main/"
                 f"data/photos/{cafeteria_id}/{slug}.{ext}"
