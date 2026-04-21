@@ -1,12 +1,21 @@
 from datetime import date, datetime
 
+import httpx
+import pytest
+import respx
+
 from src.models import (
     DishTranslated,
     TranslatedCafeteriaMenu,
     TranslatedDaySection,
     TranslatedWeeklyBundle,
 )
-from src.notion_writer import classify_meal, group_into_meals
+from src.notion_writer import (
+    CAFETERIA_SHORT_ZH,
+    NotionWriter,
+    classify_meal,
+    group_into_meals,
+)
 
 
 def _bundle_with_dishes(categories: dict[str, list[DishTranslated]]) -> TranslatedWeeklyBundle:
@@ -102,3 +111,102 @@ def test_group_skips_weekend_days():
     )
     bundle = TranslatedWeeklyBundle(week_start=date(2026, 4, 20), cafeterias=[cm])
     assert group_into_meals(bundle, lambda *a, **k: None) == []
+
+
+def _meal(**overrides):
+    base = {
+        "week_monday": date(2026, 4, 20),
+        "day": "Mon",
+        "date": date(2026, 4, 20),
+        "cafeteria_id": "science",
+        "cafeteria_name_zh_full": "自然科学校区学生食堂",
+        "cafeteria_name_en_full": "Science Cafeteria",
+        "meal": "午餐",
+        "categories": [
+            {"label_ko": "중식B", "dishes": [
+                {"name_ko": "김치찌개", "name_zh": "泡菜汤", "name_en": "Kimchi Stew",
+                 "is_new": True, "photo_url": "https://example.com/kimchi.jpg"},
+            ]},
+        ],
+        "dish_count": 1,
+        "new_count": 1,
+        "confidence": "high",
+        "source_url": "https://korea.ac.kr/ko/504",
+    }
+    base.update(overrides)
+    return base
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_upsert_meal_inserts_when_not_found():
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        return_value=httpx.Response(200, json={"results": []})
+    )
+    created = respx.post("https://api.notion.com/v1/pages").mock(
+        return_value=httpx.Response(200, json={"id": "new-page-id"})
+    )
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.upsert_meal(_meal())
+    assert result == "inserted"
+    assert created.called
+
+    body = created.calls.last.request.content.decode()
+    assert '"database_id": "dbid"' in body
+    assert "午餐" in body
+    assert "김치찌개" in body
+    assert "★" in body  # is_new marker
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_upsert_meal_updates_when_found():
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        return_value=httpx.Response(200, json={"results": [{"id": "existing-page-id"}]})
+    )
+    updated = respx.patch("https://api.notion.com/v1/pages/existing-page-id").mock(
+        return_value=httpx.Response(200, json={"id": "existing-page-id"})
+    )
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.upsert_meal(_meal())
+    assert result == "updated"
+    assert updated.called
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_upsert_meal_retries_on_429():
+    responses = iter([
+        httpx.Response(429, headers={"Retry-After": "0"}),
+        httpx.Response(200, json={"results": []}),
+    ])
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        side_effect=lambda req: next(responses)
+    )
+    respx.post("https://api.notion.com/v1/pages").mock(
+        return_value=httpx.Response(200, json={"id": "p1"})
+    )
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.upsert_meal(_meal())
+    assert result == "inserted"
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_upsert_meal_returns_failed_on_4xx():
+    respx.post("https://api.notion.com/v1/databases/dbid/query").mock(
+        return_value=httpx.Response(400, json={"message": "bad request"})
+    )
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        result = await w.upsert_meal(_meal())
+    assert result == "failed"
+
+
+def test_cafeteria_short_zh_covers_all_ids():
+    assert set(CAFETERIA_SHORT_ZH) == {
+        "science", "anam", "sanhak", "alumni", "student_center",
+    }
