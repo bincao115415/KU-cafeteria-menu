@@ -196,6 +196,124 @@ def _meal_properties(meal: MealRow) -> dict:
     }
 
 
+# --- Summary page block builders ---
+
+def _rt(text: str, *, italic: bool = False, bold: bool = False, link: str | None = None) -> dict:
+    content = {"type": "text", "text": {"content": text}}
+    if link:
+        content["text"]["link"] = {"url": link}
+    annotations: dict = {}
+    if italic:
+        annotations["italic"] = True
+    if bold:
+        annotations["bold"] = True
+    if annotations:
+        content["annotations"] = annotations
+    return content
+
+
+def _heading(level: int, text: str) -> dict:
+    key = f"heading_{level}"
+    return {"object": "block", "type": key, key: {"rich_text": [_rt(text)]}}
+
+
+def _paragraph(spans: list[dict]) -> dict:
+    return {"object": "block", "type": "paragraph", "paragraph": {"rich_text": spans}}
+
+
+def _callout(text: str, emoji: str = "🍱") -> dict:
+    return {
+        "object": "block", "type": "callout",
+        "callout": {"rich_text": [_rt(text)], "icon": {"type": "emoji", "emoji": emoji}},
+    }
+
+
+def _divider() -> dict:
+    return {"object": "block", "type": "divider", "divider": {}}
+
+
+def _bullet(spans: list[dict]) -> dict:
+    return {
+        "object": "block", "type": "bulleted_list_item",
+        "bulleted_list_item": {"rich_text": spans},
+    }
+
+
+def _toggle(text: str, children: list[dict]) -> dict:
+    return {
+        "object": "block", "type": "toggle",
+        "toggle": {"rich_text": [_rt(text)], "children": children},
+    }
+
+
+def _day_toggle_children(categories: list[CategoryBlock]) -> list[dict]:
+    blocks: list[dict] = []
+    for blk in categories:
+        blocks.append(_paragraph([_rt(f"【{blk['label_ko']}】", bold=True)]))
+        for dish in blk["dishes"]:
+            star = " ★" if dish["is_new"] else ""
+            zh = dish["name_zh"] or dish["name_ko"]
+            en = dish["name_en"]
+            text = f"{zh}{star} / {en}" if en else f"{zh}{star}"
+            blocks.append(_bullet([_rt(text)]))
+    return blocks
+
+
+_MEAL_EMOJI: dict[Meal, str] = {"午餐": "🍚", "晚餐": "🌙"}
+
+
+def _cafeteria_section(
+    cm, meals: list[MealRow]
+) -> list[dict]:
+    """Build blocks for one cafeteria: H2 + paragraph + (H3 + toggles per meal)."""
+    blocks: list[dict] = []
+    header = f"🏛 {cm.cafeteria_name_zh} · {cm.cafeteria_name_en}"
+    blocks.append(_heading(2, header))
+
+    if not meals:
+        blocks.append(_paragraph([_rt("本周该食堂未提供数据", italic=True)]))
+        return blocks
+
+    blocks.append(_paragraph([
+        _rt("📍 "),
+        _rt("原始页面 →", link=cm.source_url),
+    ]))
+
+    by_meal: dict[Meal, list[MealRow]] = {"午餐": [], "晚餐": []}
+    for m in meals:
+        by_meal[m["meal"]].append(m)
+
+    for meal in ("午餐", "晚餐"):
+        if not by_meal[meal]:
+            continue
+        blocks.append(_heading(3, f"{_MEAL_EMOJI[meal]} {meal}"))
+        for m in sorted(by_meal[meal], key=lambda x: x["date"]):
+            toggle_title = f"{m['day']} · {m['date'].isoformat()}"
+            blocks.append(_toggle(toggle_title, _day_toggle_children(m["categories"])))
+    return blocks
+
+
+def _summary_blocks(bundle: TranslatedWeeklyBundle, meals: list[MealRow]) -> list[dict]:
+    blocks: list[dict] = []
+    week_label_slash = bundle.week_start.strftime("%Y/%m/%d")
+    blocks.append(_heading(1, f"{week_label_slash} 周菜单 · KU 食堂"))
+    blocks.append(_callout(
+        f"本周新菜 {bundle.new_dish_count} 道 · {len(bundle.cafeterias)} 个食堂"
+    ))
+    blocks.append(_divider())
+
+    meals_by_cafe: dict[str, list[MealRow]] = {}
+    for m in meals:
+        meals_by_cafe.setdefault(m["cafeteria_id"], []).append(m)
+
+    for cm in bundle.cafeterias:
+        blocks.extend(_cafeteria_section(cm, meals_by_cafe.get(cm.cafeteria_id, [])))
+
+    blocks.append(_divider())
+    blocks.append(_paragraph([_rt("翻译由 DeepSeek 两轮反思验证 · 每周一 10:30 KST 自动运行")]))
+    return blocks
+
+
 class NotionWriter:
     def __init__(
         self,
@@ -275,6 +393,21 @@ class NotionWriter:
         )
         results = resp.get("results") or []
         return results[0]["id"] if results else None
+
+    async def build_summary_page(
+        self,
+        bundle: TranslatedWeeklyBundle,
+        meals: list[MealRow],
+    ) -> str:
+        week_label_slash = bundle.week_start.strftime("%Y/%m/%d")
+        resp = await self._http("POST", "/pages", json={
+            "parent": {"type": "page_id", "page_id": self.parent_page_id},
+            "properties": {
+                "title": {"title": [{"text": {"content": f"{week_label_slash} 周菜单 · KU 食堂"}}]},
+            },
+            "children": _summary_blocks(bundle, meals),
+        })
+        return resp.get("url", "")
 
     async def upsert_meal(self, meal: MealRow) -> Literal["inserted", "updated", "failed"]:
         try:

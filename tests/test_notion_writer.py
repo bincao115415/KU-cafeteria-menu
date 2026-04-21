@@ -230,3 +230,70 @@ def test_render_dishes_truncates_over_soft_limit():
     out = _render_dishes_text(categories)
     assert len(out) <= 2000
     assert "more)" in out  # truncation suffix present
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_build_summary_page_creates_expected_blocks():
+    captured: dict = {}
+
+    def respond(req):
+        captured["body"] = req.content.decode()
+        return httpx.Response(200, json={
+            "id": "summary-page-id",
+            "url": "https://www.notion.so/summary-page",
+        })
+
+    respx.post("https://api.notion.com/v1/pages").mock(side_effect=respond)
+
+    bundle = _bundle_with_dishes({
+        "중식B": [DishTranslated(name_ko="김치찌개", name_zh="泡菜汤", name_en="Kimchi Stew", is_new=True)],
+        "석식": [DishTranslated(name_ko="불고기", name_zh="烤肉", name_en="Bulgogi")],
+    })
+    bundle.new_dish_count = 5
+    meals = group_into_meals(bundle, lambda *a, **k: None)
+
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        url = await w.build_summary_page(bundle, meals)
+
+    assert url == "https://www.notion.so/summary-page"
+    body = captured["body"]
+    # parent points to the user's KU Cafeteria Menu page
+    assert '"page_id": "pid"' in body
+    # title mentions the Monday date
+    assert "2026/04/20" in body
+    # new-dish callout number
+    assert '"5"' in body or "5 道" in body
+    # both meal headers present
+    assert "🍚" in body  # lunch
+    assert "🌙" in body  # dinner
+    # category heading present
+    assert "【중식B】" in body
+    assert "【석식】" in body
+    # dish name present with star
+    assert "泡菜汤 ★ / Kimchi Stew" in body
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_build_summary_page_empty_cafeteria_renders_placeholder():
+    # Cafeteria parses but has no dishes → H2 + italic "本周该食堂未提供数据"
+    cm_empty = TranslatedCafeteriaMenu(
+        cafeteria_id="anam",
+        cafeteria_name_ko="x", cafeteria_name_zh="安岩学舍食堂", cafeteria_name_en="Anam",
+        week_start=date(2026, 4, 20), days=[],
+        source_url="u", fetched_at=datetime(2026, 4, 20, 9, 0),
+    )
+    bundle = TranslatedWeeklyBundle(week_start=date(2026, 4, 20), cafeterias=[cm_empty])
+    captured: dict = {}
+
+    def respond_empty(req):
+        captured["body"] = req.content.decode()
+        return httpx.Response(200, json={"url": "u", "id": "i"})
+
+    respx.post("https://api.notion.com/v1/pages").mock(side_effect=respond_empty)
+    async with NotionWriter(token="tk", database_id="dbid", parent_page_id="pid") as w:
+        await w.build_summary_page(bundle, [])
+
+    assert "本周该食堂未提供数据" in captured["body"]
+    assert "安岩" in captured["body"]
