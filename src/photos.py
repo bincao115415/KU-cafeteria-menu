@@ -2,6 +2,8 @@ import hashlib
 import logging
 from pathlib import Path
 
+import httpx
+
 from slugify import slugify
 
 log = logging.getLogger(__name__)
@@ -19,6 +21,31 @@ def slugify_ko(name_ko: str) -> str:
         return s
     log.debug("slugify_ko fallback to sha1 for %r", name_ko)
     return hashlib.sha1(name_ko.encode("utf-8")).hexdigest()[:10]
+
+
+def _search_unsplash(query: str, access_key: str) -> str | None:
+    try:
+        resp = httpx.get(
+            "https://api.unsplash.com/search/photos",
+            params={
+                "query": query,
+                "per_page": 1,
+                "orientation": "landscape",
+            },
+            headers={"Authorization": f"Client-ID {access_key}"},
+            timeout=10.0,
+        )
+    except httpx.HTTPError as e:
+        log.warning("unsplash request failed: %s", e)
+        return None
+    if resp.status_code != 200:
+        log.warning("unsplash %s: %s", resp.status_code, resp.text[:200])
+        return None
+    data = resp.json()
+    results = data.get("results") or []
+    if not results:
+        return None
+    return results[0].get("urls", {}).get("regular")
 
 
 def resolve_photo_url(
@@ -49,7 +76,11 @@ def resolve_photo_url(
             )
 
     if unsplash_key:
-        # Task 3 fills this in
+        query = f"{name_en} korean cafeteria food"
+        hit = _search_unsplash(query, unsplash_key)
+        if hit:
+            return hit
+        log.warning("unsplash miss for %s (query=%r)", name_ko, query)
         return None
     log.debug(
         "no local photo for %s/%s (slug=%s); no unsplash key",
