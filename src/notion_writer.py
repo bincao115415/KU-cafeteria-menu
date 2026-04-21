@@ -11,7 +11,7 @@ from tenacity import (
     wait_exponential,
 )
 
-from src.models import TranslatedWeeklyBundle
+from src.models import TranslatedCafeteriaMenu, TranslatedWeeklyBundle
 
 log = logging.getLogger(__name__)
 
@@ -262,8 +262,12 @@ def _day_toggle_children(categories: list[CategoryBlock]) -> list[dict]:
 _MEAL_EMOJI: dict[Meal, str] = {"午餐": "🍚", "晚餐": "🌙"}
 
 
+def _summary_page_title(bundle: TranslatedWeeklyBundle) -> str:
+    return f"{bundle.week_start.strftime('%Y/%m/%d')} 周菜单 · KU 食堂"
+
+
 def _cafeteria_section(
-    cm, meals: list[MealRow]
+    cm: TranslatedCafeteriaMenu, meals: list[MealRow]
 ) -> list[dict]:
     """Build blocks for one cafeteria: H2 + paragraph + (H3 + toggles per meal)."""
     blocks: list[dict] = []
@@ -295,8 +299,7 @@ def _cafeteria_section(
 
 def _summary_blocks(bundle: TranslatedWeeklyBundle, meals: list[MealRow]) -> list[dict]:
     blocks: list[dict] = []
-    week_label_slash = bundle.week_start.strftime("%Y/%m/%d")
-    blocks.append(_heading(1, f"{week_label_slash} 周菜单 · KU 食堂"))
+    blocks.append(_heading(1, _summary_page_title(bundle)))
     blocks.append(_callout(
         f"本周新菜 {bundle.new_dish_count} 道 · {len(bundle.cafeterias)} 个食堂"
     ))
@@ -399,15 +402,17 @@ class NotionWriter:
         bundle: TranslatedWeeklyBundle,
         meals: list[MealRow],
     ) -> str:
-        week_label_slash = bundle.week_start.strftime("%Y/%m/%d")
         resp = await self._http("POST", "/pages", json={
             "parent": {"type": "page_id", "page_id": self.parent_page_id},
             "properties": {
-                "title": {"title": [{"text": {"content": f"{week_label_slash} 周菜单 · KU 食堂"}}]},
+                "title": {"title": [{"text": {"content": _summary_page_title(bundle)}}]},
             },
             "children": _summary_blocks(bundle, meals),
         })
-        return resp.get("url", "")
+        url = resp.get("url")
+        if not url:
+            raise RuntimeError(f"Notion /pages response missing url: {resp}")
+        return url
 
     async def upsert_meal(self, meal: MealRow) -> Literal["inserted", "updated", "failed"]:
         try:
