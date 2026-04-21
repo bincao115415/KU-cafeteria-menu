@@ -274,6 +274,50 @@ async def test_build_summary_page_creates_expected_blocks():
     assert "泡菜汤 ★ / Kimchi Stew" in body
 
 
+def test_summary_blocks_respect_notion_block_limits():
+    """Realistic 5-cafeteria × 5-day × 2-meal bundle must fit Notion's 100-per-array
+    block ceiling (top-level children AND each toggle's children)."""
+    from src.notion_writer import _summary_blocks
+
+    cafeterias = []
+    for cid, zh in [
+        ("science", "自然科学校区学生食堂"),
+        ("anam", "安岩学舍食堂"),
+        ("sanhak", "产学馆食堂"),
+        ("alumni", "校友会馆食堂"),
+        ("student_center", "学生会馆食堂"),
+    ]:
+        days = []
+        for i, wd in enumerate(["MON", "TUE", "WED", "THU", "FRI"]):
+            lunch = [DishTranslated(name_ko=f"L{j}", name_zh=f"午{j}", name_en=f"Lunch{j}")
+                     for j in range(8)]
+            dinner = [DishTranslated(name_ko=f"D{j}", name_zh=f"晚{j}", name_en=f"Dinner{j}")
+                      for j in range(8)]
+            days.append(TranslatedDaySection(
+                date=date(2026, 4, 20 + i), weekday=wd,
+                categories={"중식B": lunch, "석식": dinner},
+            ))
+        cafeterias.append(TranslatedCafeteriaMenu(
+            cafeteria_id=cid,
+            cafeteria_name_ko=zh, cafeteria_name_zh=zh, cafeteria_name_en=cid,
+            week_start=date(2026, 4, 20), days=days,
+            source_url="https://example.com", fetched_at=datetime(2026, 4, 20, 9, 0),
+        ))
+    bundle = TranslatedWeeklyBundle(week_start=date(2026, 4, 20), cafeterias=cafeterias)
+    bundle.new_dish_count = 0
+    meals = group_into_meals(bundle, lambda *a, **k: None)
+
+    blocks = _summary_blocks(bundle, meals)
+    assert len(blocks) <= 100, f"top-level blocks={len(blocks)} exceeds Notion 100 limit"
+
+    for b in blocks:
+        children = b.get(b["type"], {}).get("children")
+        if children is not None:
+            assert len(children) <= 100, (
+                f"toggle children={len(children)} exceeds Notion 100 limit"
+            )
+
+
 @pytest.mark.asyncio
 @respx.mock
 async def test_build_summary_page_empty_cafeteria_renders_placeholder():
