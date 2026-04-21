@@ -1,7 +1,8 @@
 import json as _json
 import logging
+from collections.abc import Callable
 from datetime import date
-from typing import Callable, Literal, TypedDict
+from typing import Literal, TypedDict
 
 import httpx
 from tenacity import (

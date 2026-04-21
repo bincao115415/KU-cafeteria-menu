@@ -1,7 +1,5 @@
-from pathlib import Path
 
 import httpx
-import pytest
 import respx
 
 from src.photos import resolve_photo_url, slugify_ko
