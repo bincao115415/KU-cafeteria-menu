@@ -76,11 +76,14 @@ def resolve_photo_url(
             )
 
     if unsplash_key:
+        if not name_en or name_en.startswith("[translation failed]"):
+            log.debug("skip unsplash: invalid name_en for %s", name_ko)
+            return None
         query = f"{name_en} korean cafeteria food"
         hit = _search_unsplash(query, unsplash_key)
         if hit:
             return hit
-        log.warning("unsplash miss for %s (query=%r)", name_ko, query)
+        log.info("unsplash miss for %s (query=%r)", name_ko, query)
         return None
     log.debug(
         "no local photo for %s/%s (slug=%s); no unsplash key",

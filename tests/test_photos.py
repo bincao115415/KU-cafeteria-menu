@@ -101,6 +101,54 @@ def test_resolve_unsplash_http_error_returns_none(tmp_path):
     assert url is None
 
 
+def test_resolve_skips_unsplash_when_name_en_is_translation_failure(tmp_path):
+    (tmp_path / "photos" / "science").mkdir(parents=True)
+    with respx.mock(assert_all_called=False) as mock:
+        route = mock.get("https://api.unsplash.com/search/photos").mock(
+            return_value=httpx.Response(200, json={"results": []})
+        )
+        url = resolve_photo_url(
+            "science", "된장찌개", "[translation failed]",
+            data_dir=tmp_path, unsplash_key="us_key",
+        )
+        assert not route.called
+    assert url is None
+
+
+def test_resolve_skips_unsplash_when_name_en_is_empty(tmp_path):
+    (tmp_path / "photos" / "science").mkdir(parents=True)
+    with respx.mock(assert_all_called=False) as mock:
+        route = mock.get("https://api.unsplash.com/search/photos").mock(
+            return_value=httpx.Response(200, json={"results": []})
+        )
+        url = resolve_photo_url(
+            "science", "된장찌개", "",
+            data_dir=tmp_path, unsplash_key="us_key",
+        )
+        assert not route.called
+    assert url is None
+
+
+@respx.mock
+def test_resolve_unsplash_sends_key_in_auth_header_only(tmp_path):
+    (tmp_path / "photos" / "science").mkdir(parents=True)
+    captured: dict = {}
+
+    def responder(request):
+        captured["url"] = str(request.url)
+        captured["auth"] = request.headers.get("authorization")
+        return httpx.Response(200, json={"results": []})
+
+    respx.get("https://api.unsplash.com/search/photos").mock(side_effect=responder)
+    resolve_photo_url(
+        "science", "된장찌개", "Soybean Paste Stew",
+        data_dir=tmp_path, unsplash_key="secret_key_123",
+    )
+    assert captured["auth"] == "Client-ID secret_key_123"
+    assert "secret_key_123" not in captured["url"]
+    assert "client_id" not in captured["url"].lower()
+
+
 def test_resolve_local_takes_precedence_over_unsplash(tmp_path):
     # Local file present — Unsplash must NOT be called.
     cafe_dir = tmp_path / "photos" / "science"
