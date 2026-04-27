@@ -88,3 +88,39 @@ def test_parse_filters_price_origin_and_side_menu_lines():
     menu = _parse(html)
     names = [d.name_ko for d in menu.days[0].categories["조식"]]
     assert names == ["돈가스 컵밥", "삼각김밥 세트", "소떡소떡"]
+
+
+def test_parse_filters_unavailable_marker_line():
+    html = """
+    <table>
+      <tbody>
+        <tr>
+          <th>2026.04.27. <br>( 월 )</th>
+          <td>석식</td>
+          <td></td>
+          <td>미운영</td>
+          <td>-</td>
+        </tr>
+      </tbody>
+    </table>
+    """
+    menu = _parse(html)
+    assert menu.days[0].categories["석식"] == []
+
+
+def test_parse_filters_unavailable_marker_after_or_prefix():
+    html = """
+    <table>
+      <tbody>
+        <tr>
+          <th>2026.04.27. <br>( 월 )</th>
+          <td>석식</td>
+          <td></td>
+          <td>or 미운영</td>
+          <td>-</td>
+        </tr>
+      </tbody>
+    </table>
+    """
+    menu = _parse(html)
+    assert menu.days[0].categories["석식"] == []

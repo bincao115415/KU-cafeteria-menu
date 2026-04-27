@@ -5,6 +5,7 @@ from datetime import date, datetime, timedelta
 from bs4 import BeautifulSoup
 
 from src.models import CafeteriaMenu, DaySection, DishRaw
+from src.translation_rules import NON_MENU_ITEM_MARKERS
 from src.utils import KST
 
 log = logging.getLogger(__name__)
@@ -94,6 +95,8 @@ def _split_dishes(cell_text: str) -> list[DishRaw]:
             continue
         if line.lower().startswith("or "):
             line = line[3:].strip()
+        if line in NON_MENU_ITEM_MARKERS:
+            continue
         if line.startswith("(") and line.endswith(")") and "사이드메뉴:" in line:
             line = line[1:-1].split(":", 1)[1].strip()
         if _PRICE_ONLY_RE.fullmatch(line) or _META_LINE_RE.fullmatch(line):

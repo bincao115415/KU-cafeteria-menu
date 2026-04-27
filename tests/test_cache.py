@@ -61,6 +61,32 @@ def test_cache_existing_entries_loaded(tmp_path):
     assert "된장찌개" not in c.new_keys  # preexisting, not newly learned
 
 
+def test_cache_get_applies_manual_override_to_legacy_entry(tmp_path):
+    p = tmp_path / "t.json"
+    p.write_text(json.dumps({
+        "schema_version": 1,
+        "updated_at": "x",
+        "entries": {
+            "1회용김": _entry(
+                zh="紫菜包饭",
+                en="Gimbap",
+                note_zh="old wrong value",
+                note_en="old wrong value",
+                confidence="medium",
+            )
+        },
+    }, ensure_ascii=False))
+    c = TranslationCache(path=p)
+    hit = c.get("1회용김")
+    assert hit["zh"] == "即食海苔"
+    assert hit["en"] == "Roasted Seaweed Pack"
+    assert hit["confidence"] == "high"
+    assert hit["source"].endswith("+manual-override")
+
+    second_hit = c.get("1회용김")
+    assert second_hit["source"] == hit["source"]
+
+
 def test_state_read_and_write(tmp_path):
     p = tmp_path / "state.json"
     p.write_text(json.dumps({"last_sent_week": None, "last_run_at": None, "status": "idle"}))

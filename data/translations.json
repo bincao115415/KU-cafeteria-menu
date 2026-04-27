@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-04-27T13:53:15+09:00",
+  "updated_at": "2026-04-27T21:56:19+09:00",
   "entries": {
     "&양념장": {
       "zh": "调味酱",
@@ -263,14 +263,14 @@
       "confidence": "high"
     },
     "1회용김": {
-      "zh": "紫菜包饭",
-      "en": "Gimbap",
-      "note_zh": "用紫菜包裹米饭和配料的韩国卷饭，也称为紫菜包饭或韩式紫菜包饭",
-      "note_en": "Korean rice roll wrapped in seaweed with various fillings, also known as gimbap or Korean seaweed rice roll",
+      "zh": "即食海苔",
+      "en": "Roasted Seaweed Pack",
+      "note_zh": "单独包装的调味或烤海苔。",
+      "note_en": "Individually packaged seasoned or roasted seaweed.",
       "learned_at": "2026-04-20",
-      "source": "deepseek-two-pass",
+      "source": "deepseek-two-pass+manual-override",
       "search_confirmed": true,
-      "confidence": "medium"
+      "confidence": "high"
     },
     "[교직원식당] 7,000₩": {
       "zh": "韩式小菜拼盘",
@@ -343,14 +343,14 @@
       "confidence": "high"
     },
     "가쓰오부시타코야끼": {
-      "zh": "章鱼小丸子",
-      "en": "Takoyaki",
-      "note_zh": "一种日式小吃，以章鱼和面糊为主要成分，通常呈球形",
-      "note_en": "Japanese snack made with octopus and batter, typically spherical in shape",
+      "zh": "木鱼花章鱼小丸子",
+      "en": "Takoyaki with Bonito Flakes",
+      "note_zh": "上面撒有木鱼花的章鱼小丸子。",
+      "note_en": "Takoyaki topped with bonito flakes.",
       "learned_at": "2026-04-20",
-      "source": "deepseek-two-pass",
+      "source": "deepseek-two-pass+manual-override",
       "search_confirmed": true,
-      "confidence": "medium"
+      "confidence": "high"
     },
     "가자미소금구이&레몬": {
       "zh": "柠檬烤比目鱼",
@@ -1392,16 +1392,6 @@
       "search_confirmed": true,
       "confidence": "high"
     },
-    "미운영": {
-      "zh": "米云英",
-      "en": "Miunyeong",
-      "note_zh": null,
-      "note_en": null,
-      "learned_at": "2026-04-27",
-      "source": "deepseek-two-pass",
-      "search_confirmed": false,
-      "confidence": "low"
-    },
     "바나나": {
       "zh": "香蕉",
       "en": "Banana",
@@ -2223,14 +2213,14 @@
       "confidence": "medium"
     },
     "유부장국": {
-      "zh": "油豆腐汤",
-      "en": "Fried Tofu Soup",
-      "note_zh": "以油豆腐和肉汤为主要食材的韩式汤品",
-      "note_en": "A Korean soup made with fried tofu and broth",
+      "zh": "油豆腐清汤",
+      "en": "Clear Soup with Fried Tofu",
+      "note_zh": "加入油豆腐的清汤或日式风味汤。",
+      "note_en": "A light broth served with fried tofu pouches.",
       "learned_at": "2026-04-20",
-      "source": "deepseek-two-pass",
+      "source": "deepseek-two-pass+manual-override",
       "search_confirmed": true,
-      "confidence": "medium"
+      "confidence": "high"
     },
     "유부초밥": {
       "zh": "腐皮寿司",
@@ -2393,14 +2383,14 @@
       "confidence": "high"
     },
     "쥐어채볶음": {
-      "zh": "凉拌鱿鱼丝",
-      "en": "Stir-fried Squid Salad",
-      "note_zh": "以鱿鱼丝为主料，加入蔬菜和酱料凉拌而成，通常作为冷菜或开胃菜。",
-      "note_en": "Made with shredded squid, vegetables, and sauce, typically served as a cold dish or appetizer.",
+      "zh": "炒调味鱼干丝",
+      "en": "Stir-fried Seasoned Filefish Strips",
+      "note_zh": "以调味鱼干丝炒制的小菜。",
+      "note_en": "A side dish made from seasoned dried filefish strips.",
       "learned_at": "2026-04-20",
-      "source": "deepseek-two-pass",
+      "source": "deepseek-two-pass+manual-override",
       "search_confirmed": true,
-      "confidence": "medium"
+      "confidence": "high"
     },
     "지철이의 불고기덮밥 고구마맛탕 뭇국 푸실리샐러드 오복지무침 깍두기 양배추샐러드": {
       "zh": "智哲套餐: 烤肉盖饭, 拔丝地瓜, 萝卜汤, 意大利面沙拉, 腌萝卜条, 萝卜泡菜, 卷心菜沙拉",
@@ -2823,14 +2813,14 @@
       "confidence": "medium"
     },
     "피클": {
-      "zh": "泡菜",
+      "zh": "酸黄瓜",
       "en": "Pickles",
-      "note_zh": "韩国泡菜，通常指腌制或发酵的蔬菜小菜",
-      "note_en": "Korean pickles, typically referring to pickled or fermented vegetable side dishes",
+      "note_zh": "西式腌黄瓜或腌蔬菜配菜。",
+      "note_en": "Western-style pickled cucumber or mixed vegetables.",
       "learned_at": "2026-04-20",
-      "source": "deepseek-two-pass",
+      "source": "deepseek-two-pass+manual-override",
       "search_confirmed": true,
-      "confidence": "medium"
+      "confidence": "high"
     },
     "피클&할라피뇨": {
       "zh": "泡菜&墨西哥辣椒",
@@ -2953,14 +2943,14 @@
       "confidence": "high"
     },
     "현대에너지바": {
-      "zh": "海苔饭能量棒",
-      "en": "Seaweed Rice Energy Bar",
-      "note_zh": "用海苔、米饭等制作，通常作为健康零食",
-      "note_en": "Made with seaweed, rice, and other ingredients, typically as a healthy snack",
+      "zh": "现代能量棒",
+      "en": "Hyundai Energy Bar",
+      "note_zh": "包装能量棒或谷物棒。",
+      "note_en": "A packaged energy or cereal bar.",
       "learned_at": "2026-04-20",
-      "source": "minimax-two-pass",
+      "source": "minimax-two-pass+manual-override",
       "search_confirmed": true,
-      "confidence": "medium"
+      "confidence": "high"
     },
     "호박새우젓국": {
       "zh": "南瓜虾酱汤",

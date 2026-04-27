@@ -4,6 +4,7 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 
+from src.translation_rules import apply_translation_overrides
 from src.utils import KST
 
 log = logging.getLogger(__name__)
@@ -18,10 +19,15 @@ class TranslationCache:
         self.new_keys: set[str] = set()
 
     def get(self, key: str) -> dict | None:
-        return self._entries.get(key)
+        entry = self._entries.get(key)
+        normalized = apply_translation_overrides(key, entry)
+        if normalized is not None and normalized != entry:
+            self._entries[key] = normalized
+        return normalized
 
     def set(self, key: str, entry: dict) -> None:
-        self._entries[key] = entry
+        normalized = apply_translation_overrides(key, entry) or entry
+        self._entries[key] = normalized
         self.new_keys.add(key)
 
     def persist(self) -> None:
