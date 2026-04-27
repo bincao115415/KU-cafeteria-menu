@@ -323,7 +323,7 @@ def _meal_column_label(meal: Meal, price_krw: int | None) -> str:
 def _cafeteria_section(
     cm: TranslatedCafeteriaMenu, meals: list[MealRow]
 ) -> list[dict]:
-    """Build blocks for one cafeteria: H2 + hero image + source link + meal table."""
+    """Build blocks for one cafeteria: H2 + hero image + source link + per-meal tables."""
     cfg = _CAFE_BY_ID.get(cm.cafeteria_id, {})
     allowed_meals: list[Meal] = cfg.get("allowed_meals") or ["午餐", "晚餐"]
     price_krw = cfg.get("price_krw")
@@ -344,19 +344,25 @@ def _cafeteria_section(
     by_key: dict[tuple[DayCode, Meal], MealRow] = {
         (m["day"], m["meal"]): m for m in meals
     }
-    columns = ["日期"] + [_meal_column_label(meal, price_krw) for meal in allowed_meals]
-    rows: list[list[str]] = []
-    for day in _DAY_ORDER:
-        date_str = next(
-            (m["date"].strftime("%m/%d") for m in meals if m["day"] == day),
-            "—",
-        )
-        row = [f"{day} · {date_str}"]
-        for meal in allowed_meals:
+    for meal in allowed_meals:
+        meal_rows: list[list[str]] = []
+        has_content = False
+        for day in _DAY_ORDER:
             cell = by_key.get((day, meal))
-            row.append(_render_table_cell(cell) if cell else "—")
-        rows.append(row)
-    blocks.append(_table(columns, rows))
+            if cell:
+                has_content = True
+            date_str = next(
+                (m["date"].strftime("%m/%d") for m in meals if m["day"] == day),
+                "—",
+            )
+            meal_rows.append([
+                f"{day} · {date_str}",
+                _render_table_cell(cell) if cell else "—",
+            ])
+        if not has_content:
+            continue
+        blocks.append(_heading(3, _meal_column_label(meal, price_krw)))
+        blocks.append(_table(["日期", "菜单"], meal_rows))
     return blocks
 
 

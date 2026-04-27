@@ -273,9 +273,12 @@ async def test_build_summary_page_creates_expected_blocks():
     assert "2026/04/20" in body
     # no "本周新菜 X 道" callout — the user adds their own hero imagery to the page
     assert "本周新菜" not in body
-    # both meal column headers present in the summary table
+    # both meal section labels present
     assert "🍚" in body  # lunch
     assert "🌙" in body  # dinner
+    # lunch and dinner render as separate two-column tables, giving the meal content more width
+    assert body.count('"table_width": 2') >= 2
+    assert '"table_width": 3' not in body
     # table cells omit category labels to stay compact
     assert "【중식B】" not in body
     assert "【석식】" not in body
