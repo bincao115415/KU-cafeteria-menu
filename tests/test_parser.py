@@ -63,3 +63,28 @@ def test_parse_cafeteria_metadata_set():
     assert menu.cafeteria_id == "songnim"
     assert menu.cafeteria_name_ko == "수당삼양패컬티하우스 송림"
     assert menu.source_url.endswith("503/subview.do")
+
+
+def test_parse_filters_price_origin_and_side_menu_lines():
+    html = """
+    <table>
+      <tbody>
+        <tr>
+          <th>2026.04.27. <br>( 월 )</th>
+          <td>조식</td>
+          <td></td>
+          <td>
+            돈가스 컵밥<br>
+            or 삼각김밥 세트<br>
+            ₩1,000<br>
+            (우육:호주산)<br>
+            (사이드메뉴: 소떡소떡)
+          </td>
+          <td>-</td>
+        </tr>
+      </tbody>
+    </table>
+    """
+    menu = _parse(html)
+    names = [d.name_ko for d in menu.days[0].categories["조식"]]
+    assert names == ["돈가스 컵밥", "삼각김밥 세트", "소떡소떡"]

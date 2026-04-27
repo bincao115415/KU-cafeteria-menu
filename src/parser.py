@@ -17,6 +17,9 @@ _WEEKDAYS_ORDER = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 _DATE_RE = re.compile(r"(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})")
 _EMPTY_MARKER = "등록된 식단내용이"
 _SECTION_MARKER_RE = re.compile(r"\[([^\]]+)\]")
+_PRICE_ONLY_RE = re.compile(r"^(?:₩\s*)?\d[\d,]*(?:\s*(?:원|₩))?$")
+_ORIGIN_LINE_RE = re.compile(r"^\([^)]*:[^)]*\)$")
+_META_LINE_RE = re.compile(r"^(?:Small\s+Large|Small|Large|면류|밥류|한식|요리류|런치|디너)$", re.IGNORECASE)
 
 
 def _find_menu_table(soup: BeautifulSoup):
@@ -83,10 +86,21 @@ def _split_dishes(cell_text: str) -> list[DishRaw]:
     t = cell_text.strip()
     if not t or _EMPTY_MARKER in t:
         return []
+
     dishes = []
     for line in t.splitlines():
         line = line.strip(" \t·-,")
         if not line or _EMPTY_MARKER in line:
+            continue
+        if line.lower().startswith("or "):
+            line = line[3:].strip()
+        if line.startswith("(") and line.endswith(")") and "사이드메뉴:" in line:
+            line = line[1:-1].split(":", 1)[1].strip()
+        if _PRICE_ONLY_RE.fullmatch(line) or _META_LINE_RE.fullmatch(line):
+            continue
+        if _ORIGIN_LINE_RE.fullmatch(line):
+            continue
+        if not line or _PRICE_ONLY_RE.fullmatch(line) or _META_LINE_RE.fullmatch(line):
             continue
         dishes.append(DishRaw(name_ko=line, raw_text=line))
     return dishes

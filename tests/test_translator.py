@@ -140,3 +140,28 @@ async def test_same_dish_across_days_resolved_once(empty_cache):
     assert client.chat_reflect.await_count == 1
     assert out.days[0].categories["식사"][0].name_zh == "大酱汤"
     assert out.days[1].categories["식사"][0].name_zh == "大酱汤"
+
+
+@pytest.mark.asyncio
+async def test_compound_menu_line_is_split_before_translation(empty_cache):
+    async def chat_json(user: str, *, system: str | None = None):
+        if user.startswith("메뉴 줄:"):
+            return {"items": ["폭찹스테이크덮밥", "유부장국", "콩도너츠", "단무지"]}
+        mapping = {
+            "폭찹스테이크덮밥": {"zh": "猪排盖饭", "en": "Pork Chop Rice Bowl", "note_zh": None, "note_en": None},
+            "유부장국": {"zh": "油豆腐汤", "en": "Fried Tofu Soup", "note_zh": None, "note_en": None},
+            "콩도너츠": {"zh": "豆面甜甜圈", "en": "Bean Donut", "note_zh": None, "note_en": None},
+            "단무지": {"zh": "腌萝卜", "en": "Pickled Radish", "note_zh": None, "note_en": None},
+        }
+        return mapping[user.split(":", 1)[1]]
+
+    client = AsyncMock()
+    client.chat_json.side_effect = chat_json
+    client.chat_reflect.return_value = {"verdict": "confirm"}
+
+    t = Translator(client=client, cache=empty_cache)
+    out = await t.translate_menu(_menu_with(["폭찹스테이크덮밥 유부장국 콩도너츠 단무지"]))
+    dishes = out.days[0].categories["식사"]
+
+    assert [d.name_ko for d in dishes] == ["폭찹스테이크덮밥", "유부장국", "콩도너츠", "단무지"]
+    assert [d.name_zh for d in dishes] == ["猪排盖饭", "油豆腐汤", "豆面甜甜圈", "腌萝卜"]
