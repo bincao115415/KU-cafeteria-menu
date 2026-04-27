@@ -266,6 +266,17 @@ def _callout(text: str, emoji: str = "🍱") -> dict:
     }
 
 
+def _bulleted_list_item(spans: list[dict], children: list[dict] | None = None) -> dict:
+    item = {
+        "object": "block",
+        "type": "bulleted_list_item",
+        "bulleted_list_item": {"rich_text": spans},
+    }
+    if children:
+        item["bulleted_list_item"]["children"] = children
+    return item
+
+
 def _divider() -> dict:
     return {"object": "block", "type": "divider", "divider": {}}
 
@@ -320,10 +331,37 @@ def _meal_column_label(meal: Meal, price_krw: int | None) -> str:
     return f"{emoji} {meal} ({price})" if price else f"{emoji} {meal}"
 
 
+def _meal_card_blocks(
+    meal: Meal,
+    by_key: dict[tuple[DayCode, Meal], MealRow],
+    price_krw: int | None,
+) -> list[dict]:
+    day_blocks: list[dict] = []
+    for day in _DAY_ORDER:
+        cell = by_key.get((day, meal))
+        if not cell:
+            continue
+        date_str = cell["date"].strftime("%m/%d")
+        body = _render_table_cell(cell)
+        day_blocks.append(_bulleted_list_item(
+            [_rt(f"{day} · {date_str}", bold=True)],
+            children=[_paragraph([_rt(body)])],
+        ))
+    if not day_blocks:
+        return []
+    return [
+        _callout(
+            _meal_column_label(meal, price_krw).split(" ", 1)[1],
+            emoji=_MEAL_EMOJI[meal],
+        ),
+        *day_blocks,
+    ]
+
+
 def _cafeteria_section(
     cm: TranslatedCafeteriaMenu, meals: list[MealRow]
 ) -> list[dict]:
-    """Build blocks for one cafeteria: H2 + hero image + source link + per-meal tables."""
+    """Build blocks for one cafeteria: H2 + hero image + source link + per-meal cards."""
     cfg = _CAFE_BY_ID.get(cm.cafeteria_id, {})
     allowed_meals: list[Meal] = cfg.get("allowed_meals") or ["午餐", "晚餐"]
     price_krw = cfg.get("price_krw")
@@ -345,24 +383,7 @@ def _cafeteria_section(
         (m["day"], m["meal"]): m for m in meals
     }
     for meal in allowed_meals:
-        meal_rows: list[list[str]] = []
-        has_content = False
-        for day in _DAY_ORDER:
-            cell = by_key.get((day, meal))
-            if cell:
-                has_content = True
-            date_str = next(
-                (m["date"].strftime("%m/%d") for m in meals if m["day"] == day),
-                "—",
-            )
-            meal_rows.append([
-                f"{day} · {date_str}",
-                _render_table_cell(cell) if cell else "—",
-            ])
-        if not has_content:
-            continue
-        blocks.append(_heading(3, _meal_column_label(meal, price_krw)))
-        blocks.append(_table(["日期", "菜单"], meal_rows))
+        blocks.extend(_meal_card_blocks(meal, by_key, price_krw))
     return blocks
 
 

@@ -273,17 +273,20 @@ async def test_build_summary_page_creates_expected_blocks():
     assert "2026/04/20" in body
     # no "本周新菜 X 道" callout — the user adds their own hero imagery to the page
     assert "本周新菜" not in body
-    # both meal section labels present
+    # both meal callouts present
     assert "🍚" in body  # lunch
     assert "🌙" in body  # dinner
-    # lunch and dinner render as separate two-column tables, giving the meal content more width
-    assert body.count('"table_width": 2') >= 2
-    assert '"table_width": 3' not in body
+    assert body.count('"type": "callout"') >= 2
+    # card layout should no longer use Notion simple tables for meal summaries
+    assert '"type": "table"' not in body
+    assert '"table_width":' not in body
     # table cells omit category labels to stay compact
     assert "【중식B】" not in body
     assert "【석식】" not in body
     # dish name present with star
     assert "泡菜汤 ★ / Kimchi Stew" in body
+    # weekday label remains visible in the bullet-list card body
+    assert "Mon · 04/20" in body
     # hero image for anam is embedded in the cafeteria section
     assert "heroes/anam.jpg" in body
 
