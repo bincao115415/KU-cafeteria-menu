@@ -202,6 +202,19 @@ def _render_table_cell(meal: MealRow) -> str:
     return f"{truncated}\n… (+{dropped} more)"
 
 
+def _summary_dish_spans(dish: DishLine) -> list[dict]:
+    zh = dish["name_zh"] or dish["name_ko"]
+    en = dish["name_en"] or ""
+    is_new = dish["is_new"]
+    spans = []
+    if is_new:
+        spans.append(_rt("🆕 ", bold=True))
+    spans.append(_rt(zh, bold=is_new))
+    if en:
+        spans.append(_rt(f" / {en}", bold=is_new))
+    return spans
+
+
 def _meal_properties(meal: MealRow) -> dict:
     title = (
         f"{meal['date'].isoformat()} {meal['day']} · "
@@ -277,6 +290,17 @@ def _bulleted_list_item(spans: list[dict], children: list[dict] | None = None) -
     return item
 
 
+def _toggle(text: str, children: list[dict]) -> dict:
+    return {
+        "object": "block",
+        "type": "toggle",
+        "toggle": {
+            "rich_text": [_rt(text)],
+            "children": children,
+        },
+    }
+
+
 def _divider() -> dict:
     return {"object": "block", "type": "divider", "divider": {}}
 
@@ -342,19 +366,25 @@ def _meal_card_blocks(
         if not cell:
             continue
         date_str = cell["date"].strftime("%m/%d")
-        body = _render_table_cell(cell)
+        child_blocks = [
+            _bulleted_list_item(_summary_dish_spans(dish))
+            for category in cell["categories"]
+            for dish in category["dishes"]
+        ]
         day_blocks.append(_bulleted_list_item(
             [_rt(f"{day} · {date_str}", bold=True)],
-            children=[_paragraph([_rt(body)])],
+            children=child_blocks,
         ))
+        day_blocks.append(_divider())
     if not day_blocks:
         return []
+    day_blocks.pop()  # remove trailing divider
     return [
         _callout(
             _meal_column_label(meal, price_krw).split(" ", 1)[1],
             emoji=_MEAL_EMOJI[meal],
         ),
-        *day_blocks,
+        _toggle("查看每日菜单", day_blocks),
     ]
 
 

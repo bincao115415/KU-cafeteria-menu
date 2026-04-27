@@ -277,14 +277,18 @@ async def test_build_summary_page_creates_expected_blocks():
     assert "🍚" in body  # lunch
     assert "🌙" in body  # dinner
     assert body.count('"type": "callout"') >= 2
+    assert '"type": "toggle"' in body
     # card layout should no longer use Notion simple tables for meal summaries
     assert '"type": "table"' not in body
     assert '"table_width":' not in body
     # table cells omit category labels to stay compact
     assert "【중식B】" not in body
     assert "【석식】" not in body
-    # dish name present with star
-    assert "泡菜汤 ★ / Kimchi Stew" in body
+    # new dish is highlighted more visibly than the old star-only marker
+    assert "🆕" in body
+    assert "★ /" not in body
+    # dish name present in the card body
+    assert "泡菜汤" in body and "Kimchi Stew" in body
     # weekday label remains visible in the bullet-list card body
     assert "Mon · 04/20" in body
     # hero image for anam is embedded in the cafeteria section
@@ -302,7 +306,7 @@ def test_summary_blocks_respect_notion_block_limits():
         ("science_faculty", "自然科学校区教职员食堂"),
         ("anam", "安岩学舍食堂"),
         ("sanhak", "产学馆食堂"),
-        ("student_center", "学生会馆食堂"),
+        ("student_center", "学生会馆学生食堂"),
     ]:
         days = []
         for i, wd in enumerate(["MON", "TUE", "WED", "THU", "FRI"]):
@@ -333,6 +337,35 @@ def test_summary_blocks_respect_notion_block_limits():
             assert len(children) <= 100, (
                 f"toggle children={len(children)} exceeds Notion 100 limit"
             )
+
+
+def test_summary_card_layout_inserts_dividers_between_days():
+    from src.notion_writer import _summary_blocks
+
+    days = [
+        TranslatedDaySection(
+            date=date(2026, 4, 20 + i), weekday=wd,
+            categories={"중식B": [DishTranslated(name_ko=f"L{i}", name_zh=f"午{i}", name_en=f"Lunch{i}", is_new=(i == 0))]},
+        )
+        for i, wd in enumerate(["MON", "TUE"])
+    ]
+    cm = TranslatedCafeteriaMenu(
+        cafeteria_id="science_student",
+        cafeteria_name_ko="x", cafeteria_name_zh="自然科学校区学生食堂", cafeteria_name_en="Science Student Cafeteria",
+        week_start=date(2026, 4, 20), days=days,
+        source_url="https://example.com", fetched_at=datetime(2026, 4, 20, 9, 0),
+    )
+    bundle = TranslatedWeeklyBundle(week_start=date(2026, 4, 20), cafeterias=[cm])
+    blocks = _summary_blocks(bundle, group_into_meals(bundle, lambda *a, **k: None))
+
+    lunch_toggle = next(
+        b for b in blocks
+        if b["type"] == "toggle" and b["toggle"]["rich_text"][0]["text"]["content"] == "查看每日菜单"
+    )
+    children = lunch_toggle["toggle"]["children"]
+    divider_count = sum(1 for b in children if b["type"] == "divider")
+    assert divider_count == 1
+    assert any(b["type"] == "bulleted_list_item" for b in children)
 
 
 @pytest.mark.asyncio
