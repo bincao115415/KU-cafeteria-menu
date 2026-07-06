@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-29T10:32:04+09:00",
+  "updated_at": "2026-07-06T10:32:16+09:00",
   "entries": {
     "\"베이컨깍두기볶음밥": {
       "zh": "培根萝卜块炒饭",
@@ -862,6 +862,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "건새우얼갈이된장국": {
+      "zh": "干虾萝卜缨大酱汤",
+      "en": "Dried Shrimp and Young Radish Soybean Paste Soup",
+      "note_zh": "干虾和萝卜缨煮制的大酱汤",
+      "note_en": "Soup with dried shrimp, young radish, and soybean paste",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "건파래볶음": {
       "zh": "炒干紫菜",
       "en": "Stir-fried Dried Laver",
@@ -1122,6 +1132,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "고구마찜닭": {
+      "zh": "蒸红薯鸡",
+      "en": "Steamed Chicken with Sweet Potato",
+      "note_zh": "鸡肉与红薯一同蒸制",
+      "note_en": "Chicken steamed with sweet potatoes",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "고구마춘권": {
       "zh": "红薯春卷",
       "en": "Sweet Potato Spring Rolls",
@@ -1262,6 +1282,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "고등어튀김 &와사비장": {
+      "zh": "炸鲭鱼配芥末酱",
+      "en": "Fried Mackerel with Wasabi Sauce",
+      "note_zh": "鲭鱼裹粉油炸，蘸芥末酱食用",
+      "note_en": "Battered and fried mackerel served with wasabi sauce",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "고로케": {
       "zh": "可乐饼",
       "en": "Croquette",
@@ -1308,6 +1338,16 @@
       "note_zh": "韩式中式炸鸡，裹辣椒蛋黄酱",
       "note_en": "Korean-style Chinese fried chicken with chili mayo",
       "learned_at": "2026-05-25",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "고추마요탕수육": {
+      "zh": "辣椒蛋黄酱糖醋肉",
+      "en": "Chili Mayo Tangsuyuk",
+      "note_zh": "韩式糖醋肉搭配辣椒蛋黄酱",
+      "note_en": "Korean-style sweet and sour pork with chili mayo sauce",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
@@ -1872,6 +1912,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "김말이*만두*떡강정": {
+      "zh": "炸紫菜卷、饺子、年糕鸡块",
+      "en": "Fried Seaweed Rolls, Dumplings, Tteokgangjeong",
+      "note_zh": "混合拼盘，含油炸紫菜卷、饺子和甜辣年糕",
+      "note_en": "Assorted platter with fried seaweed rolls, dumplings, and sweet spicy rice cakes",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "김말이튀김": {
       "zh": "炸紫菜粉丝卷",
       "en": "Fried Seaweed Rolls",
@@ -1958,6 +2008,16 @@
       "note_zh": "用泡菜、猪肉、豆腐等煮制",
       "note_en": "Made with kimchi, pork, and tofu",
       "learned_at": "2026-06-01",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "김치참치마요덮밥": {
+      "zh": "金枪鱼泡菜蛋黄酱盖饭",
+      "en": "Tuna Kimchi Mayo Rice Bowl",
+      "note_zh": "金枪鱼、泡菜、蛋黄酱拌饭",
+      "note_en": "Rice topped with tuna, kimchi, and mayonnaise",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -2372,12 +2432,32 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "날치알비빔밥": {
+      "zh": "飞鱼籽拌饭",
+      "en": "Flying Fish Roe Bibimbap",
+      "note_zh": "用飞鱼籽和蔬菜拌饭",
+      "note_en": "Mixed rice with flying fish roe and vegetables",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "날치알후리카케밥": {
       "zh": "飞鱼籽拌饭",
       "en": "Flying Fish Roe Furikake Rice",
       "note_zh": "飞鱼籽与海苔碎拌饭",
       "note_en": "Rice mixed with flying fish roe and furikake",
       "learned_at": "2026-06-15",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "납작지짐만두": {
+      "zh": "煎饺",
+      "en": "Pan-Fried Dumplings",
+      "note_zh": "扁平形状的煎饺",
+      "note_en": "Flat-shaped pan-fried dumplings",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -2692,6 +2772,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "단호박샐러드": {
+      "zh": "南瓜沙拉",
+      "en": "Pumpkin Salad",
+      "note_zh": "用南瓜和蛋黄酱制成",
+      "note_en": "Made with pumpkin and mayonnaise",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "단호박죽": {
       "zh": "南瓜粥",
       "en": "Sweet Pumpkin Porridge",
@@ -2738,6 +2828,16 @@
       "note_zh": "用辣酱腌制鸡肉，搭配蔬菜炒制",
       "note_en": "Chicken marinated in spicy sauce, stir-fried with vegetables",
       "learned_at": "2026-05-25",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "닭갈비덮밥": {
+      "zh": "辣炒鸡排盖饭",
+      "en": "Spicy Stir-fried Chicken with Rice",
+      "note_zh": "用辣酱炒鸡肉和蔬菜，盖在米饭上",
+      "note_en": "Stir-fried chicken and veggies in spicy sauce over rice",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -3042,6 +3142,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "돈가스&하이라이스": {
+      "zh": "炸猪排和日式咖喱饭",
+      "en": "Pork Cutlet and Hayashi Rice",
+      "note_zh": "日式炸猪排搭配日式咖喱酱汁米饭",
+      "note_en": "Breaded pork cutlet served with Japanese-style curry sauce and rice",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
     "돈가스쫄면": {
       "zh": "炸猪排拌面",
       "en": "Pork Cutlet Jjolmyeon",
@@ -3138,6 +3248,16 @@
       "note_zh": "用猪颈肉和韭菜炒制后盖在米饭上",
       "note_en": "Stir-fried pork neck and chives over rice",
       "learned_at": "2026-05-25",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "돈민찌메추리알조림": {
+      "zh": "鹌鹑蛋炖肉",
+      "en": "Braised Quail Eggs with Pork",
+      "note_zh": "用猪肉末和鹌鹑蛋炖制",
+      "note_en": "Simmered with ground pork and quail eggs",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -3312,6 +3432,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "돈육짜장덮밥": {
+      "zh": "猪肉炸酱盖饭",
+      "en": "Pork Jajang Rice Bowl",
+      "note_zh": "用春酱炒猪肉和蔬菜，浇在米饭上",
+      "note_en": "Stir-fried pork and veggies in chunjang sauce over rice",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "돈육쭈꾸미덮밥": {
       "zh": "猪肉小章鱼盖饭",
       "en": "Pork and Webfoot Octopus Rice Bowl",
@@ -3418,6 +3548,16 @@
       "note_zh": "用肉末、豆腐等制成，蘸番茄酱食用",
       "note_en": "Made with minced meat and tofu, served with ketchup",
       "learned_at": "2026-05-04",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "동그랑땡*케찹": {
+      "zh": "韩式肉饼配番茄酱",
+      "en": "Korean Meat Patties with Ketchup",
+      "note_zh": "用豆腐、肉末等制成，蘸番茄酱食用",
+      "note_en": "Made with tofu and minced meat, served with ketchup",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -3999,6 +4139,36 @@
       "note_en": "Mini version of chocolate cake from popular Korean bakery Tous Les Jours",
       "learned_at": "2026-04-20",
       "source": "minimax-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "뚝] 날치알밥": {
+      "zh": "飞鱼籽拌饭",
+      "en": "Flying Fish Roe Rice",
+      "note_zh": "用飞鱼籽和米饭拌匀食用",
+      "note_en": "Mixed with flying fish roe",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "뚝] 닭볶음탕": {
+      "zh": "辣炖鸡块",
+      "en": "Spicy Braised Chicken",
+      "note_zh": "用辣椒酱和蔬菜炖煮的鸡肉",
+      "note_en": "Chicken braised with gochujang and vegetables",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "뚝] 참치김치찌개": {
+      "zh": "金枪鱼泡菜汤",
+      "en": "Tuna Kimchi Stew",
+      "note_zh": "用金枪鱼和泡菜煮制",
+      "note_en": "Made with tuna and kimchi",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
     },
@@ -4768,6 +4938,16 @@
       "note_zh": "将煮熟的土豆捣碎制成",
       "note_en": "Made by mashing boiled potatoes",
       "learned_at": "2026-06-29",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "메추리알감자조림": {
+      "zh": "鹌鹑蛋土豆炖",
+      "en": "Braised Quail Eggs and Potatoes",
+      "note_zh": "用酱油和糖炖煮鹌鹑蛋和土豆",
+      "note_en": "Simmered in soy sauce and sugar",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -5662,6 +5842,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "반반보쌈": {
+      "zh": "半半包肉",
+      "en": "Half-and-Half Bossam",
+      "note_zh": "一半原味一半辣味的包肉",
+      "note_en": "Half plain, half spicy bossam",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
     "배추김치": {
       "zh": "白菜泡菜",
       "en": "Baechu Kimchi",
@@ -5922,6 +6112,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "보쌈무김치": {
+      "zh": "包泡菜",
+      "en": "Bossam Kimchi",
+      "note_zh": "一种用白菜叶包裹调味馅料制成的泡菜",
+      "note_en": "A type of kimchi made by wrapping seasoned filling in cabbage leaves",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
     "복분자차": {
       "zh": "覆盆子茶",
       "en": "Korean Black Raspberry Tea",
@@ -5938,6 +6138,16 @@
       "note_zh": "用蔬菜和肉类炒制的乌冬面",
       "note_en": "Udon noodles stir-fried with vegetables and meat",
       "learned_at": "2026-06-22",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "볼감자튀김": {
+      "zh": "炸土豆球",
+      "en": "Fried Potato Balls",
+      "note_zh": "球形土豆泥裹粉油炸",
+      "note_en": "Mashed potato balls coated and deep-fried",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -6072,6 +6282,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "부추양파무침": {
+      "zh": "韭菜洋葱拌菜",
+      "en": "Garlic Chive and Onion Salad",
+      "note_zh": "韭菜和洋葱焯水后拌入调味酱",
+      "note_en": "Blanched chives and onion tossed in seasoned sauce",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "부추적채겉절이": {
       "zh": "韭菜凉拌菜",
       "en": "Seasoned Chive Salad",
@@ -6111,6 +6331,16 @@
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
+    },
+    "분짜": {
+      "zh": "越南烤肉米线",
+      "en": "Bun Cha",
+      "note_zh": "烤猪肉配米粉和鱼露蘸酱",
+      "note_en": "Grilled pork with rice noodles and fish sauce dip",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
     },
     "분홍꿀떡": {
       "zh": "粉红蜂蜜年糕",
@@ -6338,6 +6568,16 @@
       "note_zh": "以蓝莓酱和奶油制成",
       "note_en": "Made with blueberry sauce and cream",
       "learned_at": "2026-06-08",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "비름나물된장무침": {
+      "zh": "苋菜大酱拌菜",
+      "en": "Amaranth Soybean Paste Salad",
+      "note_zh": "苋菜焯水后拌大酱",
+      "note_en": "Blanched amaranth mixed with soybean paste",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -6722,6 +6962,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "삼겹파채비빔면": {
+      "zh": "五花肉葱丝拌面",
+      "en": "Pork Belly and Scallion Noodles",
+      "note_zh": "用五花肉和葱丝拌入酱料",
+      "note_en": "Mixed with pork belly, scallions, and sauce",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "삼색겨자냉채": {
       "zh": "三色芥末凉菜",
       "en": "Three-Color Mustard Salad",
@@ -6912,6 +7162,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "새우가스*타르타르소스": {
+      "zh": "炸虾配塔塔酱",
+      "en": "Shrimp Cutlet with Tartar Sauce",
+      "note_zh": "裹面包糠油炸的虾，搭配塔塔酱",
+      "note_en": "Breaded and deep-fried shrimp served with tartar sauce",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "새우까스&콘마요소스": {
       "zh": "炸虾排配玉米蛋黄酱",
       "en": "Shrimp Cutlet with Corn Mayo Sauce",
@@ -7061,6 +7321,16 @@
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
+    },
+    "새콤부추무침": {
+      "zh": "酸甜韭菜拌菜",
+      "en": "Sweet and Sour Chive Salad",
+      "note_zh": "用醋、糖、辣椒酱等调味",
+      "note_en": "Seasoned with vinegar, sugar, and chili paste",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
     },
     "새콤오이무침": {
       "zh": "酸甜黄瓜凉拌",
@@ -7378,6 +7648,16 @@
       "note_zh": "用牛肉和裙带菜煮制",
       "note_en": "Made with beef and wakame seaweed",
       "learned_at": "2026-05-25",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "소고기버섯매운탕&칼국수사리": {
+      "zh": "牛肉蘑菇辣汤&刀切面",
+      "en": "Spicy Beef and Mushroom Soup with Sliced Noodles",
+      "note_zh": "牛肉、蘑菇、辣椒酱煮汤，配刀切面",
+      "note_en": "Beef, mushrooms, gochujang broth with knife-cut noodles",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -7702,6 +7982,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "숙주미나리무침": {
+      "zh": "豆芽水芹拌菜",
+      "en": "Bean Sprout and Water Dropwort Salad",
+      "note_zh": "焯水后加调料拌匀",
+      "note_en": "Blanched and seasoned",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "순대국밥": {
       "zh": "血肠汤饭",
       "en": "Sundae Gukbap",
@@ -7778,6 +8068,16 @@
       "note_zh": "甜辣粉红酱裹无骨炸鸡，搭配原味炸鸡",
       "note_en": "Boneless chicken in sweet spicy sauce, with plain fried chicken",
       "learned_at": "2026-04-27",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "순살치킨": {
+      "zh": "无骨炸鸡",
+      "en": "Boneless Fried Chicken",
+      "note_zh": "去骨鸡肉炸制",
+      "note_en": "Deboned chicken fried",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -7892,6 +8192,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "시금치고추장국": {
+      "zh": "菠菜辣椒酱汤",
+      "en": "Spinach Gochujang Soup",
+      "note_zh": "用辣椒酱调味的菠菜汤",
+      "note_en": "Spinach soup seasoned with gochujang",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "시금치나물무침": {
       "zh": "凉拌菠菜",
       "en": "Seasoned Spinach",
@@ -7998,6 +8308,16 @@
       "note_zh": "用米糕和肉串炒制而成",
       "note_en": "Stir-fried with rice cakes and meat skewers",
       "learned_at": "2026-06-15",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "쌀떡꼬치땅콩강정": {
+      "zh": "米糕串花生酱",
+      "en": "Rice Cake Skewers with Peanut Sauce",
+      "note_zh": "米糕串裹上甜辣花生酱",
+      "note_en": "Rice cake skewers coated in sweet and spicy peanut sauce",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -8192,6 +8512,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "애호박전": {
+      "zh": "西葫芦煎饼",
+      "en": "Zucchini Pancake",
+      "note_zh": "用西葫芦切片裹面糊煎制",
+      "note_en": "Sliced zucchini coated in batter and pan-fried",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "야끼만두&김말이": {
       "zh": "煎饺&紫菜卷",
       "en": "Fried Dumplings & Seaweed Rolls",
@@ -8228,6 +8558,16 @@
       "note_zh": "油炸蔬菜馅饼",
       "note_en": "Deep-fried vegetable patty",
       "learned_at": "2026-06-15",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "야채고로케*케첩": {
+      "zh": "蔬菜可乐饼配番茄酱",
+      "en": "Vegetable Croquette with Ketchup",
+      "note_zh": "油炸蔬菜饼，外酥里嫩",
+      "note_en": "Deep-fried vegetable patty, crispy outside",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -8712,6 +9052,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "열무보리비빔밥&미니콩국수": {
+      "zh": "嫩萝卜缨大麦拌饭&小份豆浆面",
+      "en": "Young Radish Leaf Barley Bibimbap & Small Soybean Noodles",
+      "note_zh": "用嫩萝卜缨和大麦饭拌制，配以小份豆浆冷面",
+      "note_en": "Mixed with young radish leaves and barley rice, served with a small portion of cold soybean noodles",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
     "열무비빔밥": {
       "zh": "小萝卜泡菜拌饭",
       "en": "Young Radish Kimchi Bibimbap",
@@ -8952,6 +9302,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "오이맛고추무침": {
+      "zh": "凉拌青阳辣椒黄瓜",
+      "en": "Seasoned Cucumber and Cheongyang Chili Peppers",
+      "note_zh": "用辣椒酱、醋、糖等调味",
+      "note_en": "Seasoned with gochujang, vinegar, sugar",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
     "오이맛고추쌈장무침": {
       "zh": "青椒包饭酱拌黄瓜",
       "en": "Cucumber and Green Chili with Ssamjang",
@@ -9122,6 +9482,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "오징어젓무무침": {
+      "zh": "鱿鱼酱拌萝卜",
+      "en": "Spicy Squid Jeot and Radish Salad",
+      "note_zh": "用鱿鱼酱和萝卜丝凉拌而成",
+      "note_en": "Seasoned with salted squid and shredded radish",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "오징어초무침": {
       "zh": "凉拌鱿鱼",
       "en": "Spicy Squid Salad",
@@ -9242,12 +9612,32 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "와카메우동": {
+      "zh": "裙带菜乌冬面",
+      "en": "Wakame Udon",
+      "note_zh": "用裙带菜和乌冬面煮制",
+      "note_en": "Cooked with wakame seaweed and udon noodles",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "왕돈가스": {
       "zh": "王炸猪排",
       "en": "King Pork Cutlet",
       "note_zh": "大份炸猪排，外酥里嫩",
       "note_en": "Large deep-fried pork cutlet, crispy outside",
       "learned_at": "2026-06-29",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "왕만두전골": {
+      "zh": "王饺子锅",
+      "en": "King Dumpling Hot Pot",
+      "note_zh": "大饺子与蔬菜、肉片同煮",
+      "note_en": "Large dumplings simmered with vegetables and meat",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -9572,6 +9962,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "유자청청경채무침": {
+      "zh": "柚子酱拌青菜",
+      "en": "Yuja Sauce Seasoned Baby Bok Choy",
+      "note_zh": "用柚子酱和调味料凉拌的青菜",
+      "note_en": "Baby bok choy seasoned with yuja sauce",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "유자청치커리무침": {
       "zh": "柚子酱菊苣拌菜",
       "en": "Yuja Chicory Salad",
@@ -9741,6 +10141,16 @@
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
+    },
+    "장조림 버터밥": {
+      "zh": "酱炖肉黄油饭",
+      "en": "Soy-Braised Beef with Butter Rice",
+      "note_zh": "酱油炖牛肉搭配黄油米饭",
+      "note_en": "Soy-braised beef served with butter rice",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
     },
     "장조림 컵밥": {
       "zh": "酱牛肉杯饭",
@@ -10362,6 +10772,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "쫑상추무침": {
+      "zh": "凉拌生菜",
+      "en": "Seasoned Lettuce Salad",
+      "note_zh": "用醋和辣椒酱调味",
+      "note_en": "Dressed with vinegar and gochujang",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "쭈꾸미삼겹살덮밥": {
       "zh": "辣炒章鱼五花肉盖饭",
       "en": "Spicy Stir-fried Octopus and Pork Belly Rice Bowl",
@@ -10708,6 +11128,16 @@
       "note_zh": "겉절이是一种快速拌制的凉菜，非炒制",
       "note_en": "Geotjeori is a quick-mixed salad, not stir-fried",
       "learned_at": "2026-05-04",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
+    "청경채적채무침": {
+      "zh": "清炒油菜拌菜",
+      "en": "Stir-fried Bok Choy Salad",
+      "note_zh": "油菜焯水后凉拌",
+      "note_en": "Bok choy blanched and seasoned",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "medium"
@@ -11282,6 +11712,16 @@
       "search_confirmed": true,
       "confidence": "medium"
     },
+    "치킨마크니커리&통등심돈까스": {
+      "zh": "鸡肉玛克尼咖喱&整块猪里脊炸猪排",
+      "en": "Chicken Makni Curry & Whole Pork Loin Cutlet",
+      "note_zh": "咖喱与炸猪排套餐",
+      "note_en": "Curry and cutlet combo",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
+    },
     "치킨무": {
       "zh": "腌萝卜",
       "en": "Pickled Radish",
@@ -11571,6 +12011,16 @@
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
+    },
+    "콩나물코다리찜": {
+      "zh": "豆芽蒸干鳕鱼",
+      "en": "Steamed Dried Cod with Bean Sprouts",
+      "note_zh": "干鳕鱼和豆芽蒸制而成",
+      "note_en": "Steamed dish made with dried cod and bean sprouts",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "medium"
     },
     "콩나물파채무침": {
       "zh": "豆芽葱丝拌菜",
@@ -12332,6 +12782,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "해물경단조림": {
+      "zh": "海鲜丸子炖",
+      "en": "Braised Seafood Balls",
+      "note_zh": "用海鲜和淀粉制成丸子后炖煮",
+      "note_en": "Balls made of seafood and starch, then braised",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "해물볶음밥": {
       "zh": "海鲜炒饭",
       "en": "Seafood Fried Rice",
@@ -12388,6 +12848,16 @@
       "note_zh": "用海鲜和面糊煎制的小丸子饼",
       "note_en": "Pan-fried small balls made with seafood and batter",
       "learned_at": "2026-04-27",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "해물완자전&케찹": {
+      "zh": "海鲜丸子煎饼配番茄酱",
+      "en": "Seafood Ball Pancake with Ketchup",
+      "note_zh": "用海鲜和面糊煎制，蘸番茄酱食用",
+      "note_en": "Pan-fried seafood batter balls, served with ketchup",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
@@ -12461,6 +12931,16 @@
       "source": "minimax-two-pass",
       "search_confirmed": false,
       "confidence": "low"
+    },
+    "햄감자채볶음": {
+      "zh": "火腿炒土豆丝",
+      "en": "Stir-fried Ham and Shredded Potatoes",
+      "note_zh": "火腿和土豆丝一起炒制",
+      "note_en": "Stir-fried with ham and shredded potatoes",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
     },
     "햄김치 컵밥": {
       "zh": "火腿泡菜杯饭",
@@ -12702,6 +13182,16 @@
       "search_confirmed": true,
       "confidence": "high"
     },
+    "홍합무국": {
+      "zh": "贻贝萝卜汤",
+      "en": "Mussel and Radish Soup",
+      "note_zh": "用贻贝和萝卜煮制",
+      "note_en": "Made with mussels and radish",
+      "learned_at": "2026-07-06",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
     "홍합미역국": {
       "zh": "贻贝海带汤",
       "en": "Mussel Seaweed Soup",
@@ -12778,6 +13268,16 @@
       "note_zh": "用水果鸡尾酒调制的酸甜酱汁",
       "note_en": "Sweet and sour sauce with fruit cocktail",
       "learned_at": "2026-06-08",
+      "source": "deepseek-two-pass",
+      "search_confirmed": true,
+      "confidence": "high"
+    },
+    "후르츠콘샐러드": {
+      "zh": "水果玉米沙拉",
+      "en": "Fruit Corn Salad",
+      "note_zh": "以水果和玉米为主料的沙拉",
+      "note_en": "Salad with fruit and corn",
+      "learned_at": "2026-07-06",
       "source": "deepseek-two-pass",
       "search_confirmed": true,
       "confidence": "high"
