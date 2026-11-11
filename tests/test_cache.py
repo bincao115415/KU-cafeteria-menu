@@ -98,3 +98,30 @@ def test_state_read_and_write(tmp_path):
     disk = json.loads(p.read_text())
     assert disk["status"] == "done"
     assert disk["last_sent_week"] == "2026-04-20"
+
+
+@pytest.mark.parametrize("key,zh,en,confidence", [
+    ("불닭볶음우동", "韩式辣鸡风味炒乌冬面", "Buldak Stir-fried Udon", "high"),
+    ("하이라이스", "日式洋风烩饭", "Hayashi Rice", "high"),
+    ("하와이안로코모코", "夏威夷肉饼煎蛋盖饭", "Hawaiian Loco Moco", "high"),
+    ("헐랭이수육", "白切肉（헐랭이，待核对）", "Boiled Meat (헐랭이; needs review)", "low"),
+])
+def test_glossary_corrections_replace_legacy_mistranslations(tmp_cache, key, zh, en, confidence):
+    tmp_cache.set(key, _entry(zh="错误旧译", en="Wrong old translation"))
+    hit = tmp_cache.get(key)
+    assert (hit["zh"], hit["en"], hit["confidence"]) == (zh, en, confidence)
+    assert hit["search_confirmed"] is False
+
+
+@pytest.mark.parametrize("entry", [
+    _entry(zh=""), _entry(en=None), _entry(zh=[]),
+    _entry(en="[translation failed]"), _entry(confidence="failed"), _entry(confidence="unknown"),
+])
+def test_invalid_cached_values_are_retranslated(tmp_cache, entry):
+    tmp_cache.set("된장찌개", entry)
+    assert tmp_cache.get("된장찌개") is None
+
+
+def test_model_review_does_not_claim_external_source_verification(tmp_cache):
+    tmp_cache.set("된장찌개", _entry(search_confirmed=True))
+    assert tmp_cache.get("된장찌개")["search_confirmed"] is False

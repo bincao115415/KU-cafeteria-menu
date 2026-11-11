@@ -3,7 +3,8 @@
 Auto-scrapes 5 Korea University cafeteria weekly menus every Monday morning,
 translates new Korean dish names to Chinese + English with DeepSeek
 (`deepseek-chat`, two-pass self-reflection), and publishes the results to a
-Notion database + weekly summary page by ~11:30 KST.
+Notion database + weekly summary page. GitHub Actions cron starts are best-effort;
+they do not guarantee a publication deadline.
 
 ## Architecture
 
@@ -84,8 +85,38 @@ ruff check .                        # lint
 python -m src.main --dry-run        # prints the publish summary, no Notion writes
 ```
 
-Dry-run requires all Notion env vars set; the pipeline still loads settings
-before deciding to dry-run.
+Dry-run requires `DEEPSEEK_API_KEY` for uncached translations and menu-line
+splitting, but no Notion credentials. It runs even when the week is already
+published, and does not change the cache, state files, Git, or Notion.
+
+## Publication success and retries
+
+A week becomes `done` only when input processing has no fetch/parse/translation
+errors, at least one meal row is written, all meal upserts succeed, and the weekly
+summary page is created. Any incomplete publication records `failed`, preserves
+the previous `last_sent_week`, and exits with code 1 so Actions shows the failure.
+Successful translations are saved even when publication fails.
+
+The next scheduled trigger or a manual workflow rerun retries the week. Existing
+meal rows are updated using `(Week, Day, Cafeteria, Meal)`; missing rows are
+inserted. A partial write creates no summary page. After the last scheduled
+trigger, a failed week needs a manual workflow rerun.
+
+## Translation quality
+
+- Breakfast and other meal categories excluded from publication are filtered
+  before translation, avoiding unnecessary model calls and unrelated failures.
+- Compound menu lines must preserve the original Korean letters and digits in
+  order when split. Invalid splits fail the attempt so a later trigger can retry.
+- Both Chinese and English names must be nonempty strings. Failed translations
+  are not cached; low-confidence model translations are reconsidered on the next
+  run rather than trusted permanently.
+- Corrections in `src/translation_rules.py` take precedence over model output
+  and legacy cache values. They include Buldak, Hayashi rice and Loco Moco.
+- Unresolved names retain Korean text and appear with `⚠ 待核对` in meal rows and
+  summary pages. The confidence labels describe model review, not measured
+  translation accuracy. Model review does not perform web search;
+  `search_confirmed` stays false for its output.
 
 ## Schedule (GitHub Actions cron, UTC)
 
@@ -130,7 +161,11 @@ data/
   actually updated.
 - If a dish is translated incorrectly, edit its entry in
   `data/translations.json` (just the `zh`/`en`/`note_*` fields) and commit.
-  The cache is trusted for cache hits.
+  For a durable correction that must override future model output, add an exact
+  entry to `src/translation_rules.py` and a regression test.
+- `status: failed` means input processing, meal writes or summary creation was
+  incomplete. Inspect the Actions log and rerun the workflow; the status does not
+  suppress retries.
 - Notion column order in the default view is not controlled by the API. If a
   view needs `Name → Week → Day → Cafeteria → Meal → Photo → Dishes → Dish
   Count → New Count → Confidence → Source URL`, drag once in the UI; it

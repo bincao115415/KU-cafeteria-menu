@@ -1,6 +1,8 @@
 import os
 from dataclasses import dataclass
 
+_HIDDEN_CATEGORIES = {"조식", "천원의아침", "천원의아침(테이크아웃)", "아침"}
+
 _HERO_BASE = (
     "https://raw.githubusercontent.com/"
     "bincao115415/KU-cafeteria-menu/main/data/photos/heroes"
@@ -80,6 +82,14 @@ CAFETERIAS: list[dict] = [
 ]
 
 
+def is_published_category(cafeteria_id: str, category: str) -> bool:
+    if category in _HIDDEN_CATEGORIES:
+        return False
+    cfg = next((c for c in CAFETERIAS if c["cafeteria_id"] == cafeteria_id), {})
+    meal = "晚餐" if "석식" in category else "午餐"
+    return meal in (cfg.get("allowed_meals") or ["午餐", "晚餐"])
+
+
 @dataclass(frozen=True)
 class Settings:
     deepseek_api_key: str
@@ -89,7 +99,7 @@ class Settings:
     unsplash_access_key: str | None = None
 
 
-def load_settings() -> Settings:
+def load_settings(*, require_notion: bool = True) -> Settings:
     def req(key: str) -> str:
         v = os.environ.get(key)
         if not v:
@@ -98,8 +108,8 @@ def load_settings() -> Settings:
 
     return Settings(
         deepseek_api_key=req("DEEPSEEK_API_KEY"),
-        notion_token=req("NOTION_TOKEN"),
-        notion_parent_page_id=req("NOTION_PARENT_PAGE_ID"),
-        notion_database_id=req("NOTION_DATABASE_ID"),
+        notion_token=req("NOTION_TOKEN") if require_notion else "",
+        notion_parent_page_id=req("NOTION_PARENT_PAGE_ID") if require_notion else "",
+        notion_database_id=req("NOTION_DATABASE_ID") if require_notion else "",
         unsplash_access_key=os.environ.get("UNSPLASH_ACCESS_KEY") or None,
     )

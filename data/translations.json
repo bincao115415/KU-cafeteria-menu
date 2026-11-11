@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-09T10:31:42+09:00",
+  "updated_at": "2026-11-11T11:34:39+09:00",
   "entries": {
     "\"베이컨깍두기볶음밥": {
       "zh": "培根萝卜块炒饭",
@@ -409,7 +409,7 @@
       "note_en": "Individually packaged seasoned or roasted seaweed.",
       "learned_at": "2026-04-20",
       "source": "deepseek-two-pass+manual-override",
-      "search_confirmed": true,
+      "search_confirmed": false,
       "confidence": "high"
     },
     "A돈가스컵밥 두유or생수 삶은계란": {
@@ -663,13 +663,13 @@
       "confidence": "medium"
     },
     "B돈육하이라이스": {
-      "zh": "猪肉咖喱饭",
-      "en": "Pork Curry Rice",
-      "note_zh": "猪肉片配咖喱酱浇在米饭上",
-      "note_en": "Sliced pork with curry sauce over rice",
+      "zh": "猪肉洋风烩饭",
+      "en": "Pork Hayashi Rice",
+      "note_zh": "猪肉配洋风酱汁和米饭。",
+      "note_en": "Pork and rice with Hayashi-style sauce.",
       "learned_at": "2026-10-19",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
       "confidence": "high"
     },
     "B미트볼카레라이스": {
@@ -869,7 +869,7 @@
       "note_en": "Takoyaki topped with bonito flakes.",
       "learned_at": "2026-04-20",
       "source": "deepseek-two-pass+manual-override",
-      "search_confirmed": true,
+      "search_confirmed": false,
       "confidence": "high"
     },
     "가쓰오부시핫바": {
@@ -5103,14 +5103,14 @@
       "confidence": "high"
     },
     "돈가스&하이라이스": {
-      "zh": "炸猪排和日式咖喱饭",
+      "zh": "炸猪排配洋风烩饭",
       "en": "Pork Cutlet and Hayashi Rice",
-      "note_zh": "日式炸猪排搭配日式咖喱酱汁米饭",
-      "note_en": "Breaded pork cutlet served with Japanese-style curry sauce and rice",
+      "note_zh": "炸猪排搭配洋风烩饭。",
+      "note_en": "Pork cutlet served with Hayashi rice.",
       "learned_at": "2026-07-06",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
-      "confidence": "medium"
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
+      "confidence": "high"
     },
     "돈가스김치나베": {
       "zh": "炸猪排泡菜锅",
@@ -5573,13 +5573,13 @@
       "confidence": "high"
     },
     "돈육하이라이스": {
-      "zh": "猪肉咖喱饭",
-      "en": "Pork Curry Rice",
-      "note_zh": "用猪肉和咖喱酱制作的日式咖喱饭",
-      "note_en": "Japanese-style curry rice with pork",
+      "zh": "猪肉洋风烩饭",
+      "en": "Pork Hayashi Rice",
+      "note_zh": "猪肉配洋风酱汁和米饭。",
+      "note_en": "Pork and rice with Hayashi-style sauce.",
       "learned_at": "2026-04-27",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
       "confidence": "high"
     },
     "돈채양배추볶음": {
@@ -10153,13 +10153,13 @@
       "confidence": "high"
     },
     "불닭볶음우동": {
-      "zh": "火鸡炒乌冬面",
-      "en": "Spicy Chicken Stir-fried Udon",
-      "note_zh": "用辣酱炒制的鸡肉和乌冬面",
-      "note_en": "Stir-fried udon with spicy chicken sauce",
+      "zh": "韩式辣鸡风味炒乌冬面",
+      "en": "Buldak Stir-fried Udon",
+      "note_zh": "불닭 指韩式辣鸡风味；原文未说明是否含鸡肉。",
+      "note_en": "Buldak-style spicy udon; the menu does not specify whether chicken meat is included.",
       "learned_at": "2026-06-22",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
       "confidence": "high"
     },
     "불닭팽이버섯볶음": {
@@ -12373,13 +12373,13 @@
       "confidence": "high"
     },
     "소시지하이라이스": {
-      "zh": "香肠咖喱饭",
-      "en": "Sausage Curry Rice",
-      "note_zh": "用咖喱酱炒制的香肠米饭",
-      "note_en": "Stir-fried sausage and rice with curry sauce",
+      "zh": "香肠洋风烩饭",
+      "en": "Sausage Hayashi Rice",
+      "note_zh": "香肠配洋风酱汁和米饭。",
+      "note_en": "Sausage and rice with Hayashi-style sauce.",
       "learned_at": "2026-06-15",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
       "confidence": "high"
     },
     "소시지핫도그빵": {
@@ -12803,14 +12803,14 @@
       "confidence": "high"
     },
     "스크램블하이라이스": {
-      "zh": "滑蛋咖喱饭",
-      "en": "Scrambled Egg Curry Rice",
-      "note_zh": "鸡蛋与咖喱饭混合",
-      "note_en": "Eggs mixed with curry rice",
+      "zh": "炒蛋洋风烩饭",
+      "en": "Scrambled Egg Hayashi Rice",
+      "note_zh": "炒蛋配洋风酱汁和米饭。",
+      "note_en": "Scrambled egg and rice with Hayashi-style sauce.",
       "learned_at": "2026-06-08",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
-      "confidence": "medium"
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
+      "confidence": "high"
     },
     "스팸감자짜글이": {
       "zh": "午餐肉土豆炖菜",
@@ -15679,7 +15679,7 @@
       "note_en": "A light broth served with fried tofu pouches.",
       "learned_at": "2026-04-20",
       "source": "deepseek-two-pass+manual-override",
-      "search_confirmed": true,
+      "search_confirmed": false,
       "confidence": "high"
     },
     "유부주먹밥": {
@@ -16629,7 +16629,7 @@
       "note_en": "A side dish made from seasoned dried filefish strips.",
       "learned_at": "2026-04-20",
       "source": "deepseek-two-pass+manual-override",
-      "search_confirmed": true,
+      "search_confirmed": false,
       "confidence": "high"
     },
     "쥬시쿨": {
@@ -18233,13 +18233,13 @@
       "confidence": "high"
     },
     "치킨까스하이라이스": {
-      "zh": "炸鸡排咖喱饭",
+      "zh": "炸鸡排洋风烩饭",
       "en": "Chicken Cutlet Hayashi Rice",
-      "note_zh": "炸鸡排配日式咖喱酱汁盖饭",
-      "note_en": "Fried chicken cutlet with hayashi rice sauce",
+      "note_zh": "炸鸡排配洋风酱汁和米饭。",
+      "note_en": "Chicken cutlet with Hayashi rice.",
       "learned_at": "2026-09-21",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
       "confidence": "high"
     },
     "치킨너겟": {
@@ -19699,7 +19699,7 @@
       "note_en": "Western-style pickled cucumber or mixed vegetables.",
       "learned_at": "2026-04-20",
       "source": "deepseek-two-pass+manual-override",
-      "search_confirmed": true,
+      "search_confirmed": false,
       "confidence": "high"
     },
     "피클&할라피뇨": {
@@ -19743,13 +19743,13 @@
       "confidence": "low"
     },
     "하와이안로코모코": {
-      "zh": "夏威夷米饭汉堡",
+      "zh": "夏威夷肉饼煎蛋盖饭",
       "en": "Hawaiian Loco Moco",
-      "note_zh": "米饭上放汉堡肉饼、煎蛋和肉汁",
-      "note_en": "Rice topped with hamburger patty, fried egg, and gravy",
+      "note_zh": "通常为米饭配肉饼、煎蛋和肉汁。",
+      "note_en": "Traditionally rice topped with a hamburger patty, egg and gravy.",
       "learned_at": "2026-11-09",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
       "confidence": "high"
     },
     "하와이안볶음밥": {
@@ -19773,24 +19773,24 @@
       "confidence": "high"
     },
     "하이라이스": {
-      "zh": "咖喱饭",
-      "en": "Curry Rice",
-      "note_zh": "日式咖喱浇在米饭上",
-      "note_en": "Japanese-style curry served over rice",
+      "zh": "日式洋风烩饭",
+      "en": "Hayashi Rice",
+      "note_zh": "洋风酱汁烩饭，原文未说明所用肉类。",
+      "note_en": "Rice served with a Western-style brown sauce; meat is not specified.",
       "learned_at": "2026-05-04",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
       "confidence": "high"
     },
     "하이라이스덮밥": {
-      "zh": "日式咖喱盖饭",
+      "zh": "日式洋风盖饭",
       "en": "Hayashi Rice Bowl",
-      "note_zh": "日式咖喱牛肉烩饭，源自日本洋食",
-      "note_en": "Japanese-style beef curry rice, a yoshoku dish",
+      "note_zh": "米饭浇洋风酱汁，原文未说明所用肉类。",
+      "note_en": "Rice topped with Hayashi-style sauce; meat is not specified.",
       "learned_at": "2026-07-13",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
-      "confidence": "medium"
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
+      "confidence": "high"
     },
     "한글날 휴일 미운영": {
       "zh": "韩文节休息日不营业",
@@ -20473,14 +20473,14 @@
       "confidence": "high"
     },
     "헐랭이수육": {
-      "zh": "白切猪皮",
-      "en": "Sliced Boiled Pork Skin",
-      "note_zh": "猪皮煮至软烂后切片，配蘸酱食用（헐랭이指猪皮，수육指白煮切片）",
-      "note_en": "Pork skin boiled until tender, sliced and served with dipping sauce (헐랭이 = pork skin; 수육 = boiled and sliced meat)",
+      "zh": "白切肉（헐랭이，待核对）",
+      "en": "Boiled Meat (헐랭이; needs review)",
+      "note_zh": "原文未明确肉类部位；헐랭이 的含义待食堂确认。",
+      "note_en": "The meat cut and the meaning of 헐랭이 need confirmation from the cafeteria.",
       "learned_at": "2026-11-09",
-      "source": "deepseek-two-pass",
-      "search_confirmed": true,
-      "confidence": "medium"
+      "source": "deepseek-two-pass+manual-override",
+      "search_confirmed": false,
+      "confidence": "low"
     },
     "현대에너지바": {
       "zh": "现代能量棒",
@@ -20489,7 +20489,7 @@
       "note_en": "A packaged energy or cereal bar.",
       "learned_at": "2026-04-20",
       "source": "minimax-two-pass+manual-override",
-      "search_confirmed": true,
+      "search_confirmed": false,
       "confidence": "high"
     },
     "현미녹차": {

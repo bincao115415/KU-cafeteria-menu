@@ -4,7 +4,7 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 
-from src.translation_rules import apply_translation_overrides
+from src.translation_rules import apply_translation_overrides, valid_translation
 from src.utils import KST
 
 log = logging.getLogger(__name__)
@@ -18,17 +18,32 @@ class TranslationCache:
         self._entries: dict[str, dict] = raw.get("entries", {})
         self.new_keys: set[str] = set()
 
+    def __contains__(self, key: str) -> bool:
+        return key in self._entries
+
     def get(self, key: str) -> dict | None:
         entry = self._entries.get(key)
         normalized = apply_translation_overrides(key, entry)
         if normalized is not None and normalized != entry:
+            if key not in self._entries:
+                self.new_keys.add(key)
             self._entries[key] = normalized
+        if normalized is not None:
+            if not valid_translation(normalized):
+                return None
+            if normalized.get("confidence", "high") not in {"high", "medium", "low"}:
+                return None
+            if normalized.get("confidence") == "low" and "manual-override" not in normalized.get("source", ""):
+                return None
+            if "two-pass" in normalized.get("source", ""):
+                normalized["search_confirmed"] = False
         return normalized
 
     def set(self, key: str, entry: dict) -> None:
         normalized = apply_translation_overrides(key, entry) or entry
+        if key not in self._entries:
+            self.new_keys.add(key)
         self._entries[key] = normalized
-        self.new_keys.add(key)
 
     def persist(self) -> None:
         payload = {

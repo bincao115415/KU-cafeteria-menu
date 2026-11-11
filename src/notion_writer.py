@@ -2,7 +2,7 @@ import json as _json
 import logging
 from collections.abc import Callable
 from datetime import date
-from typing import Literal, TypedDict
+from typing import Literal, NotRequired, TypedDict
 
 import httpx
 from tenacity import (
@@ -12,7 +12,7 @@ from tenacity import (
     wait_exponential,
 )
 
-from src.config import CAFETERIAS
+from src.config import CAFETERIAS, is_published_category
 from src.models import TranslatedCafeteriaMenu, TranslatedWeeklyBundle
 from src.photos import resolve_photo_url
 
@@ -38,7 +38,6 @@ CAFETERIA_SHORT_ZH: dict[str, str] = {
 }
 
 _CAFE_BY_ID: dict[str, dict] = {c["cafeteria_id"]: c for c in CAFETERIAS}
-_HIDDEN_CATEGORIES = {"조식", "천원의아침", "천원의아침(테이크아웃)", "아침"}
 _CONF_ORDER: dict[Confidence, int] = {"high": 0, "medium": 1, "low": 2, "failed": 3}
 
 PhotoResolver = Callable[[str, str, str], str | None]
@@ -50,6 +49,7 @@ class DishLine(TypedDict):
     name_en: str
     is_new: bool
     photo_url: str | None
+    confidence: NotRequired[Confidence]
 
 
 class CategoryBlock(TypedDict):
@@ -110,7 +110,7 @@ def group_into_meals(
             conf_by_meal: dict[Meal, list[Confidence]] = {"午餐": [], "晚餐": []}
 
             for cat_ko, dishes in d.categories.items():
-                if cat_ko in _HIDDEN_CATEGORIES or not dishes:
+                if not is_published_category(cm.cafeteria_id, cat_ko) or not dishes:
                     continue
                 meal = classify_meal(cat_ko)
                 if meal not in allowed_meals:
@@ -123,6 +123,7 @@ def group_into_meals(
                         "name_en": dish.name_en,
                         "is_new": dish.is_new,
                         "photo_url": resolve_photo(cm.cafeteria_id, dish.name_ko, dish.name_en),
+                        "confidence": dish.confidence,
                     })
                     conf_by_meal[meal].append(dish.confidence)
 
@@ -162,6 +163,14 @@ _DISHES_SOFT_LIMIT = 2000  # Notion rich_text content limit
 _TABLE_CELL_SOFT_LIMIT = 1800
 
 
+def _review_note(dish: DishLine) -> str:
+    if dish.get("confidence") == "low":
+        return f" ⚠ 待核对（{dish['name_ko']}）"
+    if dish.get("confidence") == "failed":
+        return f" ⚠ 翻译失败（{dish['name_ko']}）"
+    return ""
+
+
 def _render_dish_lines(categories: list[CategoryBlock], *, include_labels: bool) -> list[str]:
     lines: list[str] = []
     for blk in categories:
@@ -171,7 +180,7 @@ def _render_dish_lines(categories: list[CategoryBlock], *, include_labels: bool)
             star = " ★" if dish["is_new"] else ""
             zh = dish["name_zh"] or dish["name_ko"]
             en = dish["name_en"] or ""
-            lines.append(f"• {zh}{star} / {en}".rstrip(" /"))
+            lines.append(f"• {zh}{star} / {en}".rstrip(" /") + _review_note(dish))
         if include_labels:
             lines.append("")
     return lines
@@ -212,6 +221,8 @@ def _summary_dish_spans(dish: DishLine) -> list[dict]:
     spans.append(_rt(zh, bold=is_new))
     if en:
         spans.append(_rt(f" / {en}", bold=is_new))
+    if note := _review_note(dish):
+        spans.append(_rt(note))
     return spans
 
 
@@ -430,7 +441,7 @@ def _summary_blocks(bundle: TranslatedWeeklyBundle, meals: list[MealRow]) -> lis
         blocks.extend(_cafeteria_section(cm, meals_by_cafe.get(cm.cafeteria_id, [])))
 
     blocks.append(_divider())
-    blocks.append(_paragraph([_rt("翻译由 DeepSeek 两轮反思验证 · 每周一 10:30 KST 自动运行")]))
+    blocks.append(_paragraph([_rt("DeepSeek 翻译及模型复核 · ⚠ 标记的菜名需核对原文 · 每周一更新")]))
     return blocks
 
 
@@ -531,8 +542,6 @@ class NotionWriter:
             raise RuntimeError(f"Notion /pages response missing url: {resp}")
         return url
 
-    _FAILURE_THRESHOLD = 0.3
-
     def _photo_resolver(self) -> PhotoResolver:
         def resolver(cafeteria_id: str, name_ko: str, name_en: str) -> str | None:
             return resolve_photo_url(
@@ -554,13 +563,15 @@ class NotionWriter:
             else:
                 failed += 1
 
-        total = max(1, inserted + updated + failed)
         summary_url: str | None = None
-        if failed / total > self._FAILURE_THRESHOLD:
-            log.error(
-                "meal upsert failure rate %.0f%% > %.0f%% → skipping summary page",
-                failed / total * 100, self._FAILURE_THRESHOLD * 100,
-            )
+        incomplete = bundle.global_errors or any(
+            cm.errors or any(dish.confidence == "failed" for day in cm.days
+                             for dishes in day.categories.values() for dish in dishes)
+            for cm in bundle.cafeterias
+        )
+        if failed or not meals or incomplete:
+            log.error("incomplete publication (written=%d failed=%d); skipping summary page",
+                      inserted + updated, failed)
         else:
             try:
                 summary_url = await self.build_summary_page(bundle, meals)

@@ -106,3 +106,12 @@ def test_load_settings_missing_notion_token_raises(monkeypatch):
     from src.config import load_settings
     with pytest.raises(RuntimeError, match=r"Missing required env var: NOTION_TOKEN"):
         load_settings()
+
+
+def test_dry_run_settings_require_only_deepseek(monkeypatch):
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "dk")
+    for key in ("NOTION_TOKEN", "NOTION_PARENT_PAGE_ID", "NOTION_DATABASE_ID"):
+        monkeypatch.delenv(key, raising=False)
+    settings = load_settings(require_notion=False)
+    assert settings.deepseek_api_key == "dk"
+    assert settings.notion_token == ""

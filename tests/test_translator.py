@@ -68,7 +68,8 @@ async def test_two_pass_confirm(empty_cache):
     assert dish.name_zh == "大酱汤"
     assert dish.is_new is True
     assert dish.confidence == "high"
-    assert empty_cache.get("된장찌개")["search_confirmed"] is True
+    assert empty_cache.get("된장찌개")["search_confirmed"] is False
+    assert empty_cache.get("된장찌개")["review_verdict"] == "confirm"
 
 
 @pytest.mark.asyncio
@@ -104,7 +105,7 @@ async def test_two_pass_no_signal(empty_cache):
     out = await t.translate_menu(_menu_with(["된장찌개"]))
     dish = out.days[0].categories["식사"][0]
     assert dish.confidence == "low"
-    assert empty_cache.get("된장찌개")["search_confirmed"] is False
+    assert empty_cache.get("된장찌개") is None
 
 
 @pytest.mark.asyncio
@@ -164,4 +165,74 @@ async def test_compound_menu_line_is_split_before_translation(empty_cache):
     dishes = out.days[0].categories["식사"]
 
     assert [d.name_ko for d in dishes] == ["폭찹스테이크덮밥", "유부장국", "콩도너츠", "단무지"]
-    assert [d.name_zh for d in dishes] == ["猪排盖饭", "油豆腐汤", "豆面甜甜圈", "腌萝卜"]
+    assert [d.name_zh for d in dishes] == ["猪排盖饭", "油豆腐清汤", "豆面甜甜圈", "腌萝卜"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("bad", [None, "", "   ", [], 123, "[translation failed]"])
+@pytest.mark.parametrize("field", ["zh", "en"])
+async def test_invalid_bilingual_output_is_not_cached(empty_cache, bad, field):
+    client = AsyncMock()
+    client.chat_json.return_value = {"zh": "大酱汤", "en": "Soybean Paste Stew", field: bad}
+    client.chat_reflect.return_value = {"verdict": "confirm"}
+    out = await Translator(client, empty_cache).translate_menu(_menu_with(["된장찌개"]))
+    assert out.days[0].categories["식사"][0].confidence == "failed"
+    assert out.errors
+    assert empty_cache.get("된장찌개") is None
+
+
+@pytest.mark.asyncio
+async def test_invalid_review_revision_preserves_first_pass_at_low_confidence(empty_cache):
+    client = AsyncMock()
+    client.chat_json.return_value = {"zh": "大酱汤", "en": "Soybean Paste Stew"}
+    client.chat_reflect.return_value = {"verdict": "revise", "revised": {"zh": "", "en": None}}
+    out = await Translator(client, empty_cache).translate_menu(_menu_with(["된장찌개"]))
+    dish = out.days[0].categories["식사"][0]
+    assert (dish.name_zh, dish.confidence) == ("大酱汤", "low")
+    assert empty_cache.get("된장찌개") is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("payload", [
+    {"items": ["소고기", "유부장국", "콩도너츠", "단무지"]},
+    {"items": ["폭찹스테이크덮밥", "단무지"]},
+    {"items": [{"name": "폭찹스테이크덮밥"}]},
+    {"items": []}, {"items": "폭찹스테이크덮밥"},
+])
+async def test_compound_split_rejects_invented_or_missing_source_text(empty_cache, payload):
+    client = AsyncMock()
+    client.chat_json.return_value = payload
+    with pytest.raises(ValueError, match="split"):
+        await Translator(client, empty_cache).translate_menu(
+            _menu_with(["폭찹스테이크덮밥 유부장국 콩도너츠 단무지"]))
+    assert not empty_cache.new_keys
+
+
+@pytest.mark.asyncio
+async def test_low_confidence_cached_translation_is_reviewed_again(empty_cache):
+    empty_cache.set("된장찌개", {"zh": "旧译", "en": "Old", "confidence": "low"})
+    empty_cache.new_keys.clear()
+    client = AsyncMock()
+    client.chat_json.return_value = {"zh": "大酱汤", "en": "Soybean Paste Stew"}
+    client.chat_reflect.return_value = {"verdict": "confirm"}
+    out = await Translator(client, empty_cache).translate_menu(_menu_with(["된장찌개"]))
+    assert out.days[0].categories["식사"][0].name_zh == "大酱汤"
+    assert out.days[0].categories["식사"][0].is_new is False
+    assert not empty_cache.new_keys
+    client.chat_reflect.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_unpublished_categories_are_not_sent_to_translation_model(empty_cache):
+    client = AsyncMock()
+    menu = _menu_with([])
+    menu.cafeteria_id = "science_student"
+    menu.days[0].categories = {
+        "조식": [DishRaw(name_ko="B 김치수제비 계란말이 쌀밥 배추김치", raw_text="breakfast")],
+        "석식": [DishRaw(name_ko="김치찌개", raw_text="dinner not published here")],
+    }
+    out = await Translator(client, empty_cache).translate_menu(menu)
+    assert out.days[0].categories == {}
+    client.chat_json.assert_not_awaited()
+    client.chat_reflect.assert_not_awaited()
+    assert not empty_cache.new_keys
