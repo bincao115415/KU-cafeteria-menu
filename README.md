@@ -97,6 +97,10 @@ summary page is created. Any incomplete publication records `failed`, preserves
 the previous `last_sent_week`, and exits with code 1 so Actions shows the failure.
 Successful translations are saved even when publication fails.
 
+For a full check in GitHub Actions without republishing an already completed
+week, run **Weekly cafeteria menu** manually with `dry_run` enabled. Scheduled
+runs and manual runs with `dry_run` disabled retain the normal publication behavior.
+
 The next scheduled trigger or a manual workflow rerun retries the week. Existing
 meal rows are updated using `(Week, Day, Cafeteria, Meal)`; missing rows are
 inserted. A partial write creates no summary page. After the last scheduled
